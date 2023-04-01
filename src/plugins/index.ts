@@ -24,11 +24,9 @@ export class Plugin {
     prompt += this.manifest.description_for_model + "\n";
 
     if (this.manifest.api_spec !== undefined) {
-      prompt += `The API spec for the ${this.manifest.name_for_model} tool is:\n\n${JSON.stringify(
-        this.manifest.api_spec,
-        null,
-        2
-      )}`;
+      prompt += `The API spec for the ${
+        this.manifest.name_for_model
+      } plugin is:\n\n${JSON.stringify(this.manifest.api_spec, null, 2)}`;
     }
 
     return prompt;

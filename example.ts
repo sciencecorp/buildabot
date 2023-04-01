@@ -2,7 +2,8 @@ import { ChatAgent, WebsocketAgentServer, Plugin, PluginInvocation, ModelMessage
 import { Chat } from "./src/models/api/openai";
 
 class Chimaera extends ChatAgent {
-  basePrompt = `You are Assistant, a helpful AI language model that answers questions in a chat. You and the human you are chatting with work for Science Corporation, a company that pursues advances in brain-computer interfaces, genetic engineering, automated science, and artificial intelligence.
+  basePrompt =
+    () => `You are Assistant, a helpful AI language model that answers questions in a chat. You and the human you are chatting with work for Science Corporation, a company that pursues advances in brain-computer interfaces, genetic engineering, automated science, and artificial intelligence.
   
 Assistant is designed to be able to assist with a wide range of tasks, from answering simple questions to providing in-depth explanations and discussions on a wide range of topics. As a language model, Assistant is able to generate human-like text based on the input it receives, allowing it to engage in natural-sounding conversations and provide responses that are coherent and relevant to the topic at hand.
   
@@ -11,60 +12,65 @@ Assistant is constantly learning and improving, and its capabilities are constan
 Overall, Assistant is a powerful tool that can help with a wide range of tasks and provide valuable insights and information on a wide range of topics. Whether you need help with a specific question or just want to have a conversation about a particular topic, Assistant is here to assist.
  
 Knowledge cutoff: 2021-09
-Current date: 2023-03-31`;
+Current date: 2023-03-31
 
-  pluginsPrompt = () => `TOOLS
+PLUGINS
 ------
 
-Assistant has access to several tools. It should not use a tool unless it is necessary to answer the user's question, and they should be used sparingly. However, if you not CONFIDENT you can answer ACCURATELY, you should not hesitate to use the right tool for the job to help you. To use a tool, you MUST use the following format:
+Assistant has access to several plugins. It should not use a plugin unless it is necessary to answer the user's question, and they should be used sparingly. However, if you not CONFIDENT you can answer ACCURATELY, you should not hesitate to use the right plugin for the job to help you. To use a plugin, you MUST use the following format:
 
 """
-<|Thought|> Do I need to use a tool? Yes
-<|Tool|> (ONLY the name of the tool to use, MUST be one of [${this.plugins
-    .map((p) => p.manifest.name_for_model)
-    .join(", ")})
-<|Action|> (the action to perform on the tool drawn from the API spec, if available)
-<|Action input|> (the input to the action as text based on the instructions in the tool prompt)
-"""
 
-Stop after specifying the action input. A response from the tool will be generated automatically and returned to you for you to use in your response in the format:
+<|UsePlugin|> (ONLY the name of the plugin to use, MUST be one of [${this.plugins
+      .map((p) => p.manifest.name_for_model)
+      .join(", ")})
+<|PluginAction|> (the action to perform on the plugin drawn from the API spec, if available)
+<|ActionInput|> (the input to the action as text based on the instructions in the plugin prompt)
 
 """
-<|Tool used|> [tool name]
-<|Tool output|> [tool response]
+
+For example, if you wanted to use the "Wikipedia" plugin to get the summary of the "United States" article, you would use the following:
+
 """
 
-The tools are:
+<|UsePlugin|> Wikipedia
+<|PluginAction|> get_summary
+<|ActionInput|> United States
+
+"""
+
+Stop after specifying the action input. A response from the plugin will be generated automatically and returned to you for you to use in your response in the format:
+
+"""
+
+<|PluginUsed|> [plugin name]
+<|PluginOutput|> [plugin response]
+
+"""
+
+The plugins are:
 
 ${this.plugins.map((p) => p.metaprompt()).join("\n")}`;
 
   metaprompt = async () => [
     {
       role: "system",
-      content: `${this.basePrompt}\n\n${this.pluginsPrompt()}`,
+      content: this.basePrompt(),
     },
   ];
 
   detectPluginUse = (response: string): false | PluginInvocation => {
     const lines = response.split("\n");
-    const thoughtLine = lines.find((line) =>
-      line.startsWith("<|Thought|> Do I need to use a tool? Yes")
-    );
-    const toolLine = lines.find((line) => line.startsWith("<|Tool|>"));
-    const actionLine = lines.find((line) => line.startsWith("<|Action|>"));
-    const actionInputLine = lines.find((line) => line.startsWith("<|Action input|>"));
-    if (
-      undefined === thoughtLine ||
-      undefined === toolLine ||
-      undefined === actionLine ||
-      undefined === actionInputLine
-    ) {
+    const pluginLine = lines.find((line) => line.startsWith("<|UsePlugin|>"));
+    const actionLine = lines.find((line) => line.startsWith("<|PluginAction|>"));
+    const actionInputLine = lines.find((line) => line.startsWith("<|ActionInput|>"));
+    if (undefined === pluginLine || undefined === actionLine || undefined === actionInputLine) {
       return false;
     }
     return {
-      plugin_name: toolLine.split(":")[1].trim(),
-      plugin_action: actionLine.split(":")[1].trim(),
-      action_input: actionInputLine.split(":")[1].trim(),
+      plugin_name: pluginLine.split("|>")[1].trim(),
+      plugin_action: actionLine.split("|>")[1].trim(),
+      action_input: actionInputLine.split("|>")[1].trim(),
     };
   };
 
@@ -91,7 +97,9 @@ const run = async () => {
   const plugins = [await Plugin.fromUrl("https://www.wolframalpha.com/.well-known/ai-plugin.json")];
   const chimaera = new Chimaera(plugins);
 
-  chimaera.run("How many soccer balls would fit between the earth and the moon?");
+  chimaera.run(
+    "How many soccer balls would fit between the earth and the moon? Hint: Wolfram Alpha might be helpful."
+  );
 
   // const server = new WebsocketAgentServer(chimaera);
   // server.listen();

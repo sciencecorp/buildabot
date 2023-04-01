@@ -3,8 +3,7 @@ import { Plugin } from "../plugins";
 import { PluginInvocation } from "../plugins/types";
 
 export abstract class ChatAgent {
-  abstract basePrompt: string;
-  abstract pluginsPrompt: (plugins: Plugin[]) => string;
+  abstract basePrompt: () => string;
   abstract metaprompt: () => Promise<ModelMessage[]>;
   abstract detectPluginUse: (response: string) => false | PluginInvocation;
   abstract run(prompt: string): void;
@@ -25,11 +24,9 @@ export abstract class ChatAgent {
       return;
     }
     const usePlugin = this.detectPluginUse(msg.content);
-    console.log("Detected plugin use: " + JSON.stringify(usePlugin));
     if (usePlugin) {
       console.log("Detected plugin use: " + JSON.stringify(usePlugin));
     } else {
-      console.log("No plugin use detected");
       console.log("Message: " + JSON.stringify(msg));
     }
   };
