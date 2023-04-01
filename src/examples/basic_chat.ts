@@ -25,11 +25,7 @@ Assistant has access to several plugins. It should not use a plugin unless it is
 
 """
 
-<|UsePlugin|> (ONLY the name of the plugin to use, MUST be one of [${this.plugins
-      .map((p) => p.manifest.name_for_model)
-      .join(", ")})
-<|PluginAction|> (the action to perform on the plugin drawn from the API spec, if available)
-<|ActionInput|> (the input to the action as text based on the instructions in the plugin prompt)
+<%??*%>pluginName: pluginAction: pluginInput<%??*%>
 
 """
 
@@ -37,22 +33,25 @@ For example, if you wanted to use the "Wikipedia" plugin to get the summary of t
 
 """
 
-<|UsePlugin|> Wikipedia
-<|PluginAction|> get_summary
-<|ActionInput|> United States
+<%??*%>Wikipedia: get_summary: United States<%??*%>
 
 """
 
-Stop after specifying the action input. A response from the plugin will be generated automatically and returned to you for you to use in your response in the format:
+The plugin name and plugin action must not contain colons. The plugin input can contain colons, but must not contain the "<%??*%>" string.
+
+Stop after specifying the plugin input. A response from the plugin will be generated automatically and returned to you for you to use in your response in the format:
 
 """
 
-<|PluginUsed|> [plugin name]
-<|PluginOutput|> [plugin response]
+<%!!*%>pluginName: pluginResponse<%!!*%>
 
 """
 
-The plugins are:
+pluginName MUST be one of the following literal strings: ${this.plugins
+      .map((p) => p.manifest.name_for_model)
+      .join(", ")}
+
+The avilable plugins you can use are:
 
 ${this.plugins.map((p) => p.metaprompt()).join("\n")}`;
 
@@ -64,23 +63,24 @@ ${this.plugins.map((p) => p.metaprompt()).join("\n")}`;
   ];
 
   detectPluginUse = (response: string): false | PluginInvocation => {
-    const lines = response.split("\n");
-    const pluginLine = lines.find((line) => line.startsWith("<|UsePlugin|>"));
-    const actionLine = lines.find((line) => line.startsWith("<|PluginAction|>"));
-    const actionInputLine = lines.find((line) => line.startsWith("<|ActionInput|>"));
-    if (undefined === pluginLine || undefined === actionLine || undefined === actionInputLine) {
-      return false;
+    const pattern = /<%\?\?\*%>([^:]+):\s*([^:]+):\s*([^<]+)<%\?\?\*%>/;
+    const match = response.match(pattern);
+
+    if (match) {
+      const [, name, action, input] = match;
+      return {
+        name: name,
+        action: action,
+        input: input,
+      };
     }
-    return {
-      plugin_name: pluginLine.split("|>")[1].trim(),
-      plugin_action: actionLine.split("|>")[1].trim(),
-      action_input: actionInputLine.split("|>")[1].trim(),
-    };
+
+    return false;
   };
 
   run = async (prompt: string) => {
     const messages = [...(await this.metaprompt()), { role: "user", content: prompt }];
-    await Chat.stream(
+    await Chat.sync(
       {
         messages: messages,
         model: "gpt-3.5-turbo",
@@ -101,18 +101,22 @@ const run = async () => {
   const plugins = [await WolframAlpha.init()];
   const agent = new ExampleChatAgent(plugins);
 
-  const app = express();
-  const httpServer = http.createServer(app);
+  agent.run(
+    "How many soccer balls fit between the Earth and the Moon? Hint: Wolfram might be helpful."
+  );
 
-  new WebsocketInterface(agent, httpServer, "/chat");
+  // const app = express();
+  // const httpServer = http.createServer(app);
 
-  const listen = () => {
-    const port = process.env.PORT || 8000;
-    httpServer.listen(port, () => {
-      console.log(`Listening on port ${port}`);
-    });
-  };
-  listen();
+  // new WebsocketInterface(agent, httpServer, "/chat");
+
+  // const listen = () => {
+  //   const port = process.env.PORT || 8000;
+  //   httpServer.listen(port, () => {
+  //     console.log(`Listening on port ${port}`);
+  //   });
+  // };
+  // listen();
 };
 
 run();

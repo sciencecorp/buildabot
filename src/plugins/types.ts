@@ -1,7 +1,7 @@
 export type PluginInvocation = {
-  plugin_name: string;
-  plugin_action: string;
-  action_input: string;
+  name: string;
+  action: string;
+  input: string;
 };
 
 export type PluginOutput = {

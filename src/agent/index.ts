@@ -45,11 +45,11 @@ export abstract class Agent {
 
     const usePlugin = this.detectPluginUse(msg.content);
     if (usePlugin) {
-      const plugin = this.plugins.find((p) => p.manifest.name_for_model === usePlugin.plugin_name);
+      const plugin = this.plugins.find((p) => p.manifest.name_for_model === usePlugin.name);
       if (plugin) {
-        plugin.run(usePlugin.plugin_action, usePlugin.action_input);
+        plugin.run(usePlugin.action, usePlugin.input);
       } else {
-        console.log("No plugin found for " + usePlugin.plugin_name);
+        console.log("No plugin found for " + usePlugin.name);
       }
     }
   };
