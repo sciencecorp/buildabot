@@ -1,1 +1,1 @@
-export { WebsocketInterface } from "./websocket";
+export { WebsocketInterface, WebsocketMessage } from "./websocket";

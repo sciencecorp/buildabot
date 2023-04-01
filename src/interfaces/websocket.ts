@@ -2,7 +2,28 @@ import * as http from "http";
 import WebSocket, { WebSocketServer } from "ws";
 import { ModelMessage } from "../models/types";
 import { Agent } from "../agent";
-import { PluginInvocation } from "../plugins/types";
+import { PluginInvocation, PluginOutput } from "../plugins/types";
+import { MessageRoles } from "../types";
+
+export type WebsocketMessage = {
+  type:
+    | "agent-start"
+    | "agent-finish"
+    | "agent-error"
+    | "agent-message"
+    | "agent-stream-delta"
+    | "plugin-start"
+    | "plugin-finish"
+    | "plugin-error"
+    | "plugin-message";
+  message?: {
+    role?: MessageRoles;
+    content?: string;
+    plugin?: PluginInvocation;
+  };
+  error?: string;
+  stream?: boolean;
+};
 
 export class WebsocketInterface {
   server: WebSocketServer;
@@ -23,8 +44,8 @@ export class WebsocketInterface {
         onPluginFinish: (plugin: PluginInvocation) => Handlers.onPluginFinish(ws, plugin),
         onPluginError: (plugin: PluginInvocation, err: string) =>
           Handlers.onPluginError(ws, plugin, err),
-        onPluginMessage: (plugin: PluginInvocation, message: ModelMessage) =>
-          Handlers.onPluginMessage(ws, plugin, message),
+        onPluginMessage: (plugin: PluginInvocation, output: PluginOutput) =>
+          Handlers.onPluginMessage(ws, plugin, output),
       };
 
       this.agent.addHandler(handlers);
@@ -42,7 +63,7 @@ export class WebsocketInterface {
   }
 }
 
-const sendJson = (ws: WebSocket.WebSocket, obj: any) => ws.send(JSON.stringify(obj));
+const sendJson = (ws: WebSocket.WebSocket, obj: WebsocketMessage) => ws.send(JSON.stringify(obj));
 
 const Handlers = {
   onStart: (ws: WebSocket.WebSocket) => sendJson(ws, { type: "agent-start" }),
@@ -50,35 +71,56 @@ const Handlers = {
   onFinish: (ws: WebSocket.WebSocket) => sendJson(ws, { type: "agent-finish" }),
 
   onError: (ws: WebSocket.WebSocket, err: string) =>
-    sendJson(ws, { type: "agent-error", data: err }),
+    sendJson(ws, { type: "agent-error", error: err }),
 
   onMessage: (ws: WebSocket.WebSocket, message: ModelMessage) =>
     sendJson(ws, {
       type: "agent-message",
-      role: message.role,
-      content: message.content,
+      message: {
+        role: message.role,
+        content: message.content,
+      },
     }),
 
   onToken: (ws: WebSocket.WebSocket, delta: ModelMessage) =>
-    sendJson(ws, { type: "agent-stream-delta", delta }),
+    sendJson(ws, {
+      type: "agent-stream-delta",
+      message: {
+        role: delta.role,
+        content: delta.content,
+      },
+      stream: true,
+    }),
 
   onPluginStart: (ws: WebSocket.WebSocket, plugin: PluginInvocation) =>
-    sendJson(ws, { type: "plugin-start", plugin }),
+    sendJson(ws, {
+      type: "plugin-start",
+      message: {
+        role: "system",
+        plugin,
+      },
+    }),
 
   onPluginFinish: (ws: WebSocket.WebSocket, plugin: PluginInvocation) =>
-    sendJson(ws, { type: "plugin-finish", plugin }),
+    sendJson(ws, { type: "plugin-finish", message: { role: "system", plugin } }),
 
-  onPluginMessage: (ws: WebSocket.WebSocket, plugin: PluginInvocation, message: ModelMessage) =>
+  onPluginMessage: (ws: WebSocket.WebSocket, plugin: PluginInvocation, output: PluginOutput) =>
     sendJson(ws, {
       type: "plugin-message",
-      plugin,
-      message,
+      message: {
+        role: "system",
+        content: output.output,
+        plugin,
+      },
     }),
 
   onPluginError: (ws: WebSocket.WebSocket, plugin: PluginInvocation, error: string) =>
     sendJson(ws, {
       type: "plugin-error",
-      plugin,
+      message: {
+        role: "system",
+        plugin,
+      },
       error,
     }),
 };

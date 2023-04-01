@@ -1,7 +1,7 @@
 import express from "express";
 import * as http from "http";
 
-import { Agent, WebsocketInterface, PluginInvocation } from "..";
+import { Agent, WebsocketInterface, PluginInvocation, ModelMessage } from "..";
 import { Chat } from "../models/api/openai";
 import { WolframAlpha } from "../plugins";
 
@@ -55,7 +55,7 @@ The avilable plugins you can use are:
 
 ${this.plugins.map((p) => p.metaprompt()).join("\n")}`;
 
-  metaprompt = async () => [
+  metaprompt: () => Promise<ModelMessage[]> = async () => [
     {
       role: "system",
       content: this.basePrompt(),
@@ -79,7 +79,10 @@ ${this.plugins.map((p) => p.metaprompt()).join("\n")}`;
   };
 
   run = async (prompt: string) => {
-    const messages = [...(await this.metaprompt()), { role: "user", content: prompt }];
+    const messages: ModelMessage[] = [
+      ...(await this.metaprompt()),
+      { role: "user", content: prompt },
+    ];
     await Chat.sync(
       {
         messages: messages,

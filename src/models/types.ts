@@ -1,8 +1,7 @@
-import { Plugin } from "../plugins";
-import { PluginInvocation } from "../plugins/types";
+import { MessageRoles } from "../types";
 
 export type ModelMessage = {
-  role?: string;
+  role?: MessageRoles;
   content?: string;
   index?: number;
   finish_reason?: string;

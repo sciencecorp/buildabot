@@ -1,5 +1,5 @@
 import { ModelMessage } from "../models/types";
-import { PluginInvocation } from "../plugins";
+import { PluginInvocation, PluginOutput } from "../plugins";
 
 export interface AgentCallbacks {
   onStart?: () => void;
@@ -10,6 +10,6 @@ export interface AgentCallbacks {
 
   onPluginStart?: (plugin: PluginInvocation) => void;
   onPluginFinish?: (plugin: PluginInvocation) => void;
-  onPluginMessage?: (plugin: PluginInvocation, message: ModelMessage) => void;
+  onPluginMessage?: (plugin: PluginInvocation, output: PluginOutput) => void;
   onPluginError?: (plugin: PluginInvocation, error: string) => void;
 }

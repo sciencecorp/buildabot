@@ -8,17 +8,16 @@ export abstract class Plugin {
   }
 
   metaprompt() {
-    let prompt = `\n### ${this.manifest.name_for_model}\n`;
-
-    prompt += this.manifest.description_for_model + "\n";
-
-    if (this.manifest.api_spec !== undefined) {
-      prompt += `The API spec for the ${
-        this.manifest.name_for_model
-      } plugin is:\n\n${JSON.stringify(this.manifest.api_spec, null, 2)}`;
-    }
-
-    return prompt;
+    return (
+      `\n### ${this.manifest.name_for_model}\n${this.manifest.description_for_model}\n` +
+      (this.manifest.api_spec !== undefined
+        ? `The API spec for the ${this.manifest.name_for_model} plugin is:\n\n${JSON.stringify(
+            this.manifest.api_spec,
+            null,
+            2
+          )}`
+        : "")
+    );
   }
 
   abstract run(action: string, input: string): Promise<PluginOutput>;

@@ -36,3 +36,4 @@ During project generation you can choose to optionally include an example agent 
 - wire up tool execution properly (ie implement plugins)
 - implement conversation memory
 - implement agent scratchpad & self-prompting (chain of thought)
+- add tests

@@ -2,6 +2,7 @@ import { createParser, ParsedEvent, ReconnectInterval } from "eventsource-parser
 import { makeApiCall, makeStreamingApiCall } from ".";
 import { ModelCallbacks, ModelChatRequest, ModelCompletionRequest } from "../types";
 import { Response } from "node-fetch";
+import { MessageRoles } from "../../types";
 
 type ChatStreamingResponse = {
   id: string;
@@ -11,11 +12,11 @@ type ChatStreamingResponse = {
     {
       message?: {
         content?: string;
-        role?: string;
+        role?: MessageRoles;
       };
       delta?: {
         content?: string;
-        role?: string;
+        role?: MessageRoles;
       };
       index: number;
       finish_reason: string;
