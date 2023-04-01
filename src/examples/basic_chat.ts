@@ -67,7 +67,7 @@ ${this.plugins.map((p) => p.metaprompt()).join("\n")}`;
   };
 
   detectPluginUse = (response: string): false | PluginInvocation => {
-    const pattern = /<%\?\?\*%>([^:]+):\s*([^:]+):\s*([^<]+)<%\?\?\*%>/;
+    const pattern = /<%\*\?\?\*%>([^:]+):\s*([^:]+):\s*([^<]+)<%\*\?\?\*%>/;
     const match = response.match(pattern);
 
     if (match) {
