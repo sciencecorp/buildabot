@@ -5,7 +5,7 @@ export class WolframAlpha extends Plugin {
   static manifestUrl = "https://www.wolframalpha.com/.well-known/ai-plugin.json";
   static apiUrlBase = "https://www.wolframalpha.com/api/v1/llm-api";
 
-  static async init() {
+  static async load() {
     const manifest = await LoadPlugin(WolframAlpha.manifestUrl, true);
     if (manifest === undefined) {
       throw new Error("Failed to load plugin manifest from " + WolframAlpha.manifestUrl);

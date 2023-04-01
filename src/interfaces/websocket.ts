@@ -50,7 +50,10 @@ export class WebsocketInterface {
 
       this.agent.addHandler(handlers);
 
-      ws.on("close", () => console.log("websocket closed"));
+      ws.on(
+        "close",
+        () => (this.agent.handlers = this.agent.handlers.filter((h) => h !== handlers))
+      );
       ws.on("message", (data) => {
         const message = JSON.parse(data.toString());
         this.agent.run(message.content);
@@ -63,7 +66,10 @@ export class WebsocketInterface {
   }
 }
 
-const sendJson = (ws: WebSocket.WebSocket, obj: WebsocketMessage) => ws.send(JSON.stringify(obj));
+const sendJson = (ws: WebSocket.WebSocket, obj: WebsocketMessage) => {
+  console.log(`Sending: ${JSON.stringify(obj)}`);
+  ws.send(JSON.stringify(obj));
+};
 
 const Handlers = {
   onStart: (ws: WebSocket.WebSocket) => sendJson(ws, { type: "agent-start" }),
