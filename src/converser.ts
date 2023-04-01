@@ -1,6 +1,6 @@
-import { ChatAgent } from "./agent";
+import { Agent } from "./agent";
 
-export const connect = (agent1: ChatAgent, agent2: ChatAgent) => {
+export const connect = (agent1: Agent, agent2: Agent) => {
   // agent1.onPromptReceived = (prompt: string) => {
   //   agent2.run(prompt);
   // };

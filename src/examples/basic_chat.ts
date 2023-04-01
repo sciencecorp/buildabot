@@ -1,8 +1,11 @@
-import { ChatAgent, WebsocketAgentServer, Plugin, PluginInvocation, ModelMessage } from "./src";
-import { Chat } from "./src/models/api/openai";
-import { WolframAlpha } from "./src/plugins";
+import express from "express";
+import * as http from "http";
 
-class Chimaera extends ChatAgent {
+import { Agent, WebsocketInterface, PluginInvocation } from "..";
+import { Chat } from "../models/api/openai";
+import { WolframAlpha } from "../plugins";
+
+class ExampleChatAgent extends Agent {
   basePrompt =
     () => `You are Assistant, a helpful AI language model that answers questions in a chat. You and the human you are chatting with work for Science Corporation, a company that pursues advances in brain-computer interfaces, genetic engineering, automated science, and artificial intelligence.
   
@@ -13,7 +16,7 @@ Assistant is constantly learning and improving, and its capabilities are constan
 Overall, Assistant is a powerful tool that can help with a wide range of tasks and provide valuable insights and information on a wide range of topics. Whether you need help with a specific question or just want to have a conversation about a particular topic, Assistant is here to assist.
  
 Knowledge cutoff: 2021-09
-Current date: 2023-03-31
+Current date: ${new Date().toLocaleDateString("sv")}
 
 
 ## Plugins
@@ -96,9 +99,20 @@ ${this.plugins.map((p) => p.metaprompt()).join("\n")}`;
 
 const run = async () => {
   const plugins = [await WolframAlpha.init()];
-  const chimaera = new Chimaera(plugins);
-  const server = new WebsocketAgentServer(chimaera);
-  server.listen();
+  const agent = new ExampleChatAgent(plugins);
+
+  const app = express();
+  const httpServer = http.createServer(app);
+
+  new WebsocketInterface(agent, httpServer, "/chat");
+
+  const listen = () => {
+    const port = process.env.PORT || 8000;
+    httpServer.listen(port, () => {
+      console.log(`Listening on port ${port}`);
+    });
+  };
+  listen();
 };
 
 run();

@@ -1,3 +1,6 @@
+import { Plugin } from "../plugins";
+import { PluginInvocation } from "../plugins/types";
+
 export type ModelMessage = {
   role?: string;
   content?: string;

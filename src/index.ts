@@ -1,4 +1,5 @@
-export { ChatAgent } from "./agent";
+export { Agent } from "./agent";
+export { AgentCallbacks } from "./agent/types";
 export {
   ModelMessage,
   ModelManifest,
@@ -11,6 +12,6 @@ export {
   ModelCallbacks,
 } from "./models/types";
 export { connect } from "./converser";
-export { WebsocketAgentServer } from "./server";
+export { WebsocketInterface } from "./interfaces";
 export { Plugin } from "./plugins";
 export { PluginInvocation } from "./plugins/types";

@@ -1,3 +1,4 @@
 .env
 *.ipynb
 node_modules/
+scratch*
