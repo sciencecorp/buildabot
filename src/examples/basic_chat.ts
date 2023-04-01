@@ -21,11 +21,11 @@ Current date: ${new Date().toLocaleDateString("sv")}
 
 ## Plugins
 
-Assistant has access to several plugins. You should not use a plugin unless it is necessary to answer the user's question; however, if you not CONFIDENT you can answer ACCURATELY, you should not hesitate to use the right plugin for the job to help you. To use a plugin, you MUST use the following format:
+You have access to several plugins. To use a plugin, you must generate a response in the following format:
 
 \`<%*??*%>pluginName: pluginAction: pluginInput<%*??*%>\`
 
-For example, if you wanted to use the "Wikipedia" plugin to get the summary of the "United States" article, you would use the following:
+For example, if you wanted to use the "Wikipedia" plugin to get the summary of the "United States" article, you would return the following:
 
 \`<%*??*%>Wikipedia: get_summary: United States<%*??*%>\`
 
@@ -35,7 +35,7 @@ A response from the plugin will be generated automatically and returned to you f
 
 \`<%*!!*%>pluginName: pluginAction: pluginResponse<%*!!*%>\`
 
-You will NEVER generate text that include \`<%*!!*%>\` -- it will always be generated for you and given to you. If you generate \`<%*!!*%>\`, you are hallucinating and should not return that information.
+You should NEVER generate text that include \`<%*!!*%>\` -- it will always be generated for you and given to you. If you generate \`<%*!!*%>\`, you are hallucinating and should not return that information.
 
 pluginName MUST be one of the following literal strings: ${this.plugins
       .map((p) => p.manifest.name_for_model)
@@ -87,7 +87,7 @@ ${this.plugins.map((p) => p.metaprompt()).join("\n")}`;
     await Chat.sync(
       {
         messages: this.messages,
-        model: "gpt-4",
+        model: "gpt-3.5-turbo",
         max_tokens: 500,
       },
       {
