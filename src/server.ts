@@ -17,18 +17,19 @@ export class WebsocketAgentServer {
     this.httpServer = http.createServer(this.app);
     this.server = new WebSocketServer({ server: this.httpServer, path: "/chat" });
 
+    this.agent.addHandler({
+      onMessage: this.onMessage,
+      onToken: this.onToken,
+      onError: this.onError,
+      onStart: this.onStart,
+      onFinish: this.onFinish,
+    });
+
     this.server.on("connection", (ws) => {
       ws.on("close", () => console.log("Client has disconnected!"));
       ws.on("message", (data) => {
         const message = JSON.parse(data.toString());
-        console.log("Message: " + JSON.stringify(message));
-
-        ws.send(
-          JSON.stringify({
-            type: "info",
-            message: "Hello from buildabot!",
-          })
-        );
+        this.agent.run(message.content);
       });
       ws.onerror = function () {
         console.log("websocket error");
@@ -40,6 +41,37 @@ export class WebsocketAgentServer {
     const port = process.env.PORT || 8000;
     this.httpServer.listen(port, () => {
       console.log(`Listening on port ${port}`);
+    });
+  };
+
+  onStart = () => {
+    this.server.clients.forEach((client) => {
+      client.send(
+        JSON.stringify({
+          type: "agent-start",
+        })
+      );
+    });
+  };
+
+  onFinish = () => {
+    this.server.clients.forEach((client) => {
+      client.send(
+        JSON.stringify({
+          type: "agent-finish",
+        })
+      );
+    });
+  };
+
+  onError = (err: string) => {
+    this.server.clients.forEach((client) => {
+      client.send(
+        JSON.stringify({
+          type: "agent-error",
+          data: err,
+        })
+      );
     });
   };
 

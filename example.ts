@@ -1,5 +1,6 @@
 import { ChatAgent, WebsocketAgentServer, Plugin, PluginInvocation, ModelMessage } from "./src";
 import { Chat } from "./src/models/api/openai";
+import { WolframAlpha } from "./src/plugins";
 
 class Chimaera extends ChatAgent {
   basePrompt =
@@ -14,8 +15,8 @@ Overall, Assistant is a powerful tool that can help with a wide range of tasks a
 Knowledge cutoff: 2021-09
 Current date: 2023-03-31
 
-PLUGINS
-------
+
+## Plugins
 
 Assistant has access to several plugins. It should not use a plugin unless it is necessary to answer the user's question, and they should be used sparingly. However, if you not CONFIDENT you can answer ACCURATELY, you should not hesitate to use the right plugin for the job to help you. To use a plugin, you MUST use the following format:
 
@@ -76,33 +77,28 @@ ${this.plugins.map((p) => p.metaprompt()).join("\n")}`;
 
   run = async (prompt: string) => {
     const messages = [...(await this.metaprompt()), { role: "user", content: prompt }];
-    await Chat.sync(
+    await Chat.stream(
       {
         messages: messages,
         model: "gpt-3.5-turbo",
-        max_tokens: 100,
+        max_tokens: 150,
       },
       {
+        onStart: this.onStart,
+        onFinish: this.onFinish,
         onError: this.onError,
         onMessage: this.onMessage,
-        onToken: (delta: ModelMessage) => {
-          console.log(JSON.stringify(delta));
-        },
+        onToken: this.onToken,
       }
     );
   };
 }
 
 const run = async () => {
-  const plugins = [await Plugin.fromUrl("https://www.wolframalpha.com/.well-known/ai-plugin.json")];
+  const plugins = [await WolframAlpha.init()];
   const chimaera = new Chimaera(plugins);
-
-  chimaera.run(
-    "How many soccer balls would fit between the earth and the moon? Hint: Wolfram Alpha might be helpful."
-  );
-
-  // const server = new WebsocketAgentServer(chimaera);
-  // server.listen();
+  const server = new WebsocketAgentServer(chimaera);
+  server.listen();
 };
 
 run();

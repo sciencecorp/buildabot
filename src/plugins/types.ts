@@ -1,16 +1,13 @@
-export type ModelPlugin = {
-  manifest: PluginManifest;
-
-  onDetect: () => void;
-  onStart: () => void;
-  onError: (error: string) => void;
-  emitToken: (token: string) => void;
-};
-
 export type PluginInvocation = {
   plugin_name: string;
   plugin_action: string;
   action_input: string;
+};
+
+export type PluginOutput = {
+  name: string;
+  output?: string;
+  error?: string;
 };
 
 type ManifestAuthType = "none" | "user_http" | "service_http" | "oauth";
@@ -18,7 +15,7 @@ type HttpAuthorizationType = "bearer" | "basic";
 
 type BaseManifestAuth = {
   type: ManifestAuthType;
-  instructions: string;
+  instructions?: string;
 };
 
 type ManifestServiceHttpAuth = BaseManifestAuth & {
@@ -76,9 +73,9 @@ export type PluginManifest = {
   description_for_human: string;
   description_for_model: string;
   auth: ManifestAuth;
-  api: ApiSpec;
+  api?: ApiSpec;
   logo_url: string;
-  contact_email: string;
-  legal_info_url: string;
+  contact_email?: string;
+  legal_info_url?: string;
   api_spec?: any;
 };
