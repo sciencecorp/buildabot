@@ -32,6 +32,6 @@ During project generation you can choose to optionally include an example agent 
 
 ## Todo
 
-- if a response involves plugin use, send the response with dynamic elements for plugin execution
+- handle plugin use in streaming agents
 - implement agent scratchpad & self-prompting (chain of thought)
 - add tests
