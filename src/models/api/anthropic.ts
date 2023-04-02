@@ -1,7 +1,11 @@
+import {
+  createParser,
+  ParsedEvent,
+  ReconnectInterval,
+} from "eventsource-parser";
 import { Response } from "node-fetch";
 import { makeApiCall, makeStreamingApiCall } from ".";
-import { ModelCallbacks, ModelCompletionRequest, ModelCompletionResponse } from "../types";
-import { ParsedEvent, ReconnectInterval, createParser } from "eventsource-parser";
+import { ModelCallbacks, ModelCompletionRequest } from "../types";
 
 const headers = () => {
   return {
@@ -23,7 +27,6 @@ const streamingCompletionResponseHandler = (callbacks: ModelCallbacks) => {
   const parse = (event: ParsedEvent | ReconnectInterval) => {
     if (event.type === "event") {
       if ("[DONE]" == event.data) {
-        callbacks.onFinish ? callbacks.onFinish() : null;
         return;
       }
       const data = JSON.parse(event.data) as CompletionResponse;
