@@ -1,6 +1,9 @@
+import express from "express";
+import http from "http";
 import { Browser, Shell } from "../src/plugins";
 import { OpenApiPlugin } from "../src/plugins/openapi";
 import { ChimaeraAgent } from "./agent";
+import { WebsocketInterface } from "../src";
 
 const run = async () => {
   const plugins = [
@@ -11,21 +14,21 @@ const run = async () => {
   const agent = new ChimaeraAgent(plugins);
   agent.init();
 
-  agent.run("how many soccer players are there in the world?");
+  // agent.run("how many soccer players are there in the world?");
   // agent.run("create a new directory at /etc/var/foo");
 
-  // const app = express();
-  // const httpServer = http.createServer(app);
+  const app = express();
+  const httpServer = http.createServer(app);
 
-  // new WebsocketInterface(agent, httpServer, "/chat");
+  new WebsocketInterface(agent, httpServer, "/chat");
 
-  // const listen = () => {
-  //   const port = process.env.PORT || 8000;
-  //   httpServer.listen(port, () => {
-  //     console.log(`Listening on port ${port}`);
-  //   });
-  // };
-  // listen();
+  const listen = () => {
+    const port = process.env.PORT || 8000;
+    httpServer.listen(port, () => {
+      console.log(`Listening on port ${port}`);
+    });
+  };
+  listen();
 };
 
 run();
