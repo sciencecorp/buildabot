@@ -1,11 +1,8 @@
-import express from "express";
-import * as http from "http";
+import { Agent, PluginInvocation } from "../src";
+import { Chat } from "../src/models/api/openai";
+import { PluginOutput } from "../src/plugins";
 
-import { Agent, WebsocketInterface, PluginInvocation, ModelMessage } from "..";
-import { Chat } from "../models/api/openai";
-import { Browser, PluginOutput, Shell, WolframAlpha } from "../plugins";
-
-class ExampleChatAgent extends Agent {
+export class ChimaeraAgent extends Agent {
   basePrompt =
     () => `You are Assistant, a helpful AI language model that answers questions in a chat. You and the human you are chatting with work for Science Corporation, a company that pursues advances in brain-computer interfaces, genetic engineering, automated science, and artificial intelligence.
   
@@ -44,13 +41,6 @@ pluginName MUST be one of the following literal strings: ${this.plugins
 The avilable plugins you can use are:
 
 ${this.plugins.map((p) => p.metaprompt()).join("\n")}`;
-
-  metaprompt: () => ModelMessage[] = () => [
-    {
-      role: "system",
-      content: this.basePrompt(),
-    },
-  ];
 
   handlePluginOutput = (input: PluginInvocation, output: PluginOutput) => {
     if (output.error) {
@@ -100,30 +90,3 @@ ${this.plugins.map((p) => p.metaprompt()).join("\n")}`;
     );
   };
 }
-
-const run = async () => {
-  const plugins = [
-    new Browser(),
-    new Shell(),
-    // await WolframAlpha.load()
-  ];
-  const agent = new ExampleChatAgent(plugins);
-  agent.init();
-
-  // agent.run("create a new directory at /etc/var/foo");
-
-  const app = express();
-  const httpServer = http.createServer(app);
-
-  new WebsocketInterface(agent, httpServer, "/chat");
-
-  const listen = () => {
-    const port = process.env.PORT || 8000;
-    httpServer.listen(port, () => {
-      console.log(`Listening on port ${port}`);
-    });
-  };
-  listen();
-};
-
-run();

@@ -5,7 +5,6 @@ import { AgentCallbacks } from "./types";
 
 export abstract class Agent {
   abstract basePrompt: () => string;
-  abstract metaprompt: () => ModelMessage[];
   abstract detectPluginUse: (response: string) => false | PluginInvocation;
   abstract handlePluginOutput: (input: PluginInvocation, output: PluginOutput) => void;
   abstract run(prompt: string): void;
@@ -21,6 +20,13 @@ export abstract class Agent {
   init() {
     this.messages = [...this.metaprompt()];
   }
+
+  metaprompt: () => ModelMessage[] = () => [
+    {
+      role: "system",
+      content: this.basePrompt(),
+    },
+  ];
 
   addHandler = (callbacks: AgentCallbacks) => this.handlers.push(callbacks);
 
@@ -53,6 +59,7 @@ export abstract class Agent {
     this.handlers.forEach((h) => (h.onMessage ? h.onMessage(msg) : null));
 
     this.messages.push(msg);
+    console.log(`Message: ${msg.content}`);
 
     const pluginInvocation = this.detectPluginUse(msg.content);
     if (pluginInvocation) {

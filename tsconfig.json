@@ -11,7 +11,8 @@
     "experimentalDecorators": true,
     "allowJs": true,
     "noImplicitAny": true,
+    "typeRoots": ["./node_modules/@types", "./types"],
     "lib": ["es2015", "es2020"]
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*", "chimaera/index.ts"]
 }
