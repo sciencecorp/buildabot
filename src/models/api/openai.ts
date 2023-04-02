@@ -132,7 +132,7 @@ const completionData = (req: ModelCompletionRequest, stream: boolean) => {
 };
 
 export const Chat = {
-  sync: async (req: ModelChatRequest, callbacks: ModelCallbacks) =>
+  sync: async (req: ModelChatRequest, callbacks?: ModelCallbacks) =>
     makeApiCall(
       "https://api.openai.com/v1/chat/completions",
       chatData(req, false),
@@ -157,7 +157,7 @@ export const Chat = {
 };
 
 export const Complete = {
-  sync: async (req: ModelCompletionRequest, callbacks: ModelCallbacks) =>
+  sync: async (req: ModelCompletionRequest, callbacks?: ModelCallbacks) =>
     makeApiCall(
       "https://api.openai.com/v1/completions",
       completionData(req, false),
