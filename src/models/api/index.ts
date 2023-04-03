@@ -40,16 +40,21 @@ export const makeApiCall = async (
   callbacks?: ModelCallbacks
 ) => {
   callbacks?.onStart ? callbacks.onStart() : null;
-  const req = await fetch(endpoint, {
-    method: "post",
-    body: JSON.stringify(data),
-    headers: headers,
-  });
-  if (!req.ok) {
-    callbacks?.onError ? callbacks?.onError(await req.text()) : null;
+  try {
+    const req = await fetch(endpoint, {
+      method: "post",
+      body: JSON.stringify(data),
+      headers: headers,
+    });
+    if (!req.ok) {
+      callbacks?.onError ? callbacks?.onError(await req.text()) : null;
+    }
+    const msg = await messageParser(req);
+    callbacks?.onMessage ? callbacks.onMessage(msg) : null;
+    callbacks?.onFinish ? callbacks.onFinish() : null;
+    return msg;
+  } catch (err) {
+    callbacks?.onError ? callbacks.onError((err as Error).message) : null;
+    callbacks?.onFinish ? callbacks.onFinish() : null;
   }
-  const msg = await messageParser(req);
-  callbacks?.onMessage ? callbacks.onMessage(msg) : null;
-  callbacks?.onFinish ? callbacks.onFinish() : null;
-  return msg;
 };

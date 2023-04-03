@@ -13,6 +13,8 @@ export abstract class Agent {
   plugins: Plugin[] = [];
   handlers: AgentCallbacks[] = [];
   messages: ModelMessage[] = [];
+  verbose: boolean = false;
+  pluginDetectRegex: RegExp | null = null;
 
   constructor(plugins: Plugin[]) {
     this.plugins = plugins;
@@ -28,6 +30,13 @@ export abstract class Agent {
       content: this.basePrompt(),
     },
   ];
+
+  filterPluginInvocation = (input: string): string => {
+    if (!this.pluginDetectRegex) {
+      return input;
+    }
+    return input.replace(this.pluginDetectRegex, "");
+  };
 
   addHandler = (callbacks: AgentCallbacks) => this.handlers.push(callbacks);
 
@@ -52,17 +61,29 @@ export abstract class Agent {
   onFinish = () => this.handlers.forEach((h) => (h.onFinish ? h.onFinish() : null));
   onToken = (delta: ModelMessage) =>
     this.handlers.forEach((h) => (h.onToken ? h.onToken(delta) : null));
+
   onMessage = (msg: ModelMessage): void => {
     if (undefined === msg.content) {
       return;
     }
 
-    this.handlers.forEach((h) => (h.onMessage ? h.onMessage(msg) : null));
-
     this.messages.push(msg);
-    console.log(`Message: ${msg.content}`);
+
+    if (this.verbose) {
+      console.log(`Message: ${msg.content}`);
+    }
 
     const pluginInvocation = this.detectPluginUse(msg.content);
+
+    this.handlers.forEach((h) =>
+      h.onMessage
+        ? h.onMessage({
+            role: msg.role,
+            content: this.filterPluginInvocation(msg.content?.trim() || ""),
+          })
+        : null
+    );
+
     if (pluginInvocation) {
       const plugin = this.plugins.find((p) => p.manifest.name_for_model === pluginInvocation.name);
       if (plugin) {

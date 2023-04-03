@@ -41,7 +41,7 @@ Current date: ${new Date().toLocaleDateString("sv")}` +
       }
     );
 
-    if (!message.content) {
+    if (!message || !message.content) {
       console.log("Warning: received a blank completion from Critic.");
       return false;
     }

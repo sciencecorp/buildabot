@@ -108,8 +108,8 @@ agent: return: [{title: "Ask HN: What are you working on?", url: "https://news.y
         }
       );
 
-      if (!message.content) {
-        console.log("Warning: received a blank completion from BrowserAgent");
+      if (!message || !message.content) {
+        console.log("Warning: received a null or blank completion from BrowserAgent");
         return;
       }
 

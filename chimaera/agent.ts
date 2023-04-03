@@ -22,6 +22,8 @@ Overall, Assistant is a powerful tool that can help with a wide range of tasks a
 Knowledge cutoff: 2021-09
 Current date: ${new Date().toLocaleDateString("sv")}`;
 
+  override pluginDetectRegex = /<%\*\?\?\*%>.*?<%\*\?\?\*%>/gs;
+
   basePrompt = () =>
     this.chimaeraPrompt() + (this.plugins.length > 0 ? "\n\n" + pluginsPrompt(this.plugins) : "");
 
