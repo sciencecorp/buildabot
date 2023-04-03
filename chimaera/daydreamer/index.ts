@@ -1,19 +1,23 @@
 import chalk from "chalk";
 import { Critic } from "./critic";
 import { Generator } from "./generator";
-import { Daydreamer } from "../../src/plugins";
+import { Daydreamer, Plugin } from "../../src/plugins";
+import { OpenApiPlugin } from "../../src/plugins/openapi";
 
 const verbose = true;
 
 export class ChimaeraDreamer implements Daydreamer {
-  generator = new Generator([]);
-  critic = new Critic([]);
+  generator: Generator;
+  critic: Critic;
 
   done: boolean = false;
   counter: number = 0;
   max_iterations: number;
 
-  constructor(max_iterations: number = 100) {
+  constructor(plugins: Plugin[] = [], max_iterations: number = 100) {
+    this.generator = new Generator(plugins);
+    this.critic = new Critic(plugins);
+
     this.generator.init();
     this.critic.init();
     this.max_iterations = max_iterations;

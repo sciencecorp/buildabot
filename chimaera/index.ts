@@ -7,11 +7,16 @@ import { ChimaeraAgent } from "./agent";
 import { ChimaeraDreamer } from "./daydreamer";
 
 const run = async () => {
-  const plugins: Plugin[] = [new Browser(), new Shell(), new Daydream(new ChimaeraDreamer())];
+  const retrievalPlugin = process.env.RETRIEVAL_PLUGIN_URL
+    ? [await OpenApiPlugin.fromUrl(process.env.RETRIEVAL_PLUGIN_URL)]
+    : [];
 
-  if (process.env.RETRIEVAL_PLUGIN_URL) {
-    plugins.push(await OpenApiPlugin.fromUrl(process.env.RETRIEVAL_PLUGIN_URL));
-  }
+  const plugins: Plugin[] = [
+    new Browser(),
+    new Shell(),
+    new Daydream(new ChimaeraDreamer(retrievalPlugin)),
+    ...retrievalPlugin,
+  ];
 
   const agent = new ChimaeraAgent(plugins);
   agent.init();

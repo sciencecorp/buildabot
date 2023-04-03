@@ -13,7 +13,7 @@ For example, if you wanted to use the "Browser" plugin to search for "how many n
 
 The plugin name and plugin action must not contain colons. The plugin input can contain colons, but must not contain the <%*??*%> string.
 
-The avilable plugins you can use are:
+The available plugins are:
 
 ${plugins.map((p) => p.metaprompt()).join("\n")}`;
 
