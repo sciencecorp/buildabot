@@ -11,7 +11,6 @@ export {
   ModelChatResponse,
   ModelCallbacks,
 } from "./models/types";
-export { connect } from "./converser";
 export { WebsocketInterface } from "./interfaces";
 export { Plugin } from "./plugins";
 export { PluginInvocation } from "./plugins/types";

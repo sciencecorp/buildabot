@@ -13,23 +13,6 @@ Build-a-bot is oriented around four basic components:
 
 A typical implementation will expose one agent built on a range of models and prompts and able to use a range of plugins via a websocket.
 
-## Getting Started
-
-To create a new project, run:
-
-```bash
-npm create buildabot@latest
-```
-
-This will create a new project in the current directory. You can then run the project with:
-
-```bash
-npm install
-npm start
-```
-
-During project generation you can choose to optionally include an example agent as a starting point.
-
 ## Known Issues
 
 - Observations in the Browser plugin are frequently far too large to fit in model context, and splitting is not currently implemented.
