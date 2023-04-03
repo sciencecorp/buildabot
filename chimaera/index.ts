@@ -1,16 +1,12 @@
 import express from "express";
 import http from "http";
-import { Browser, Shell } from "../src/plugins";
-import { OpenApiPlugin } from "../src/plugins/openapi";
+import { Browser, Daydream, Shell } from "../src/plugins";
+import { ChimaeraDreamer } from "./daydreamer";
 import { ChimaeraAgent } from "./agent";
 import { WebsocketInterface } from "../src";
 
 const run = async () => {
-  const plugins = [
-    new Browser(),
-    new Shell(),
-    await OpenApiPlugin.fromUrl("https://www.wolframalpha.com/.well-known/ai-plugin.json"),
-  ];
+  const plugins = [new Browser(), new Shell(), new Daydream(new ChimaeraDreamer())];
   const agent = new ChimaeraAgent(plugins);
   agent.init();
 

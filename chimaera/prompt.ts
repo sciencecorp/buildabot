@@ -7,21 +7,11 @@ You have access to several plugins. To use a plugin, you must generate a respons
 
 \`<%*??*%>pluginName: pluginAction: pluginInput<%*??*%>\`
 
-For example, if you wanted to use the "Wikipedia" plugin to get the summary of the "United States" article, you would return the following:
+For example, if you wanted to use the "Browser" plugin to search for "how many neurons are in the human brain", you would return the following:
 
-\`<%*??*%>Wikipedia: get_summary: United States<%*??*%>\`
+\`<%*??*%>Browser: search: how many neurons are in the human brain<%*??*%>\`
 
 The plugin name and plugin action must not contain colons. The plugin input can contain colons, but must not contain the \`<%*??*%>\` string.
-
-A response from the plugin will be generated automatically and returned to you for you to use in your response in the format as a system message:
-
-\`<%*!!*%>pluginName: pluginAction: pluginResponse<%*!!*%>\`
-
-You should NEVER generate text that include \`<%*!!*%>\` -- it will always be generated for you and given to you. If you generate \`<%*!!*%>\`, you are hallucinating and should not return that information.
-
-pluginName MUST be one of the following literal strings: ${plugins
-  .map((p) => p.manifest.name_for_model)
-  .join(", ")}
 
 The avilable plugins you can use are:
 
