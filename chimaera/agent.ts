@@ -23,13 +23,11 @@ Knowledge cutoff: 2021-09
 Current date: ${new Date().toLocaleDateString("sv")}`;
 
   basePrompt = () =>
-    this.chimaeraPrompt() +
-    (this.plugins.length > 0 ? "\n\n" + pluginsPrompt(this.plugins) : "");
+    this.chimaeraPrompt() + (this.plugins.length > 0 ? "\n\n" + pluginsPrompt(this.plugins) : "");
 
   handlePluginOutput = (input: PluginInvocation, output: PluginOutput) =>
     _handlePluginOutput(this, input, output);
-  detectPluginUse = (response: string): false | PluginInvocation =>
-    _detectPluginUse(response);
+  detectPluginUse = (response: string): false | PluginInvocation => _detectPluginUse(response);
 
   run = async (prompt: string, role?: MessageRoles) => {
     if (!role) {

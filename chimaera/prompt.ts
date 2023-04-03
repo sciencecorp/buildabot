@@ -5,13 +5,13 @@ export const pluginsPrompt = (plugins: Plugin[]) => `## Plugins
 
 You have access to several plugins. To use a plugin, you must generate a response in the following format:
 
-\`<%*??*%>pluginName: pluginAction: pluginInput<%*??*%>\`
+<%*??*%>pluginName: pluginAction: pluginInput<%*??*%>
 
 For example, if you wanted to use the "Browser" plugin to search for "how many neurons are in the human brain", you would return the following:
 
-\`<%*??*%>Browser: search: how many neurons are in the human brain<%*??*%>\`
+<%*??*%>Browser: search: how many neurons are in the human brain<%*??*%>
 
-The plugin name and plugin action must not contain colons. The plugin input can contain colons, but must not contain the \`<%*??*%>\` string.
+The plugin name and plugin action must not contain colons. The plugin input can contain colons, but must not contain the <%*??*%> string.
 
 The avilable plugins you can use are:
 
@@ -28,16 +28,11 @@ export const _handlePluginOutput = (
       "system"
     );
   } else {
-    agent.run(
-      `The plugin returned: ${input.name}: ${input.action}: ${output.output}`,
-      "system"
-    );
+    agent.run(`The plugin returned: ${input.name}: ${input.action}: ${output.output}`, "system");
   }
 };
 
-export const _detectPluginUse = (
-  response: string
-): false | PluginInvocation => {
+export const _detectPluginUse = (response: string): false | PluginInvocation => {
   const pattern = /<%\*\?\?\*%>([^:]+):\s*([^:]+):\s*([^<]+)<%\*\?\?\*%>/;
   const match = response.match(pattern);
 

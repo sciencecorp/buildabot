@@ -11,9 +11,7 @@ const run = async () => {
     new Browser(),
     new Shell(),
     new Daydream(new ChimaeraDreamer()),
-    await OpenApiPlugin.fromUrl(
-      "http://0.0.0.0:8000/.well-known/ai-plugin.json"
-    ),
+    await OpenApiPlugin.fromUrl("http://0.0.0.0:8000/.well-known/ai-plugin.json"),
   ];
   const agent = new ChimaeraAgent(plugins);
   agent.init();

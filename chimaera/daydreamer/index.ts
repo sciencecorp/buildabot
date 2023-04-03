@@ -9,16 +9,21 @@ export class ChimaeraDreamer implements Daydreamer {
   generator = new Generator([]);
   critic = new Critic([]);
 
-  constructor() {
+  done: boolean = false;
+  counter: number = 0;
+  max_iterations: number;
+
+  constructor(max_iterations: number = 100) {
     this.generator.init();
     this.critic.init();
+    this.max_iterations = max_iterations;
   }
 
   async start(input: string) {
     let prompt: string | false = input;
 
     if (verbose) {
-      console.log("Starting daydreaming session...");
+      console.log(chalk.bold.green("Starting daydreaming session..."));
       console.log(`Prompt: ${chalk.bold(prompt)}`);
     }
 
@@ -38,16 +43,24 @@ export class ChimaeraDreamer implements Daydreamer {
       if (counter % 2 === 0) {
         prompt = await this.generator.run(prompt);
         if (verbose) {
-          console.log(`${chalk.bold.green("Generator")}\n${prompt}`);
+          console.log(`${chalk.green("Generator")}\n${prompt}`);
         }
       } else {
         prompt = await this.critic.run(prompt);
         if (verbose) {
-          console.log(`${chalk.bold.blueBright("Critic")}\n${prompt}`);
+          console.log(`${chalk.blueBright("Critic")}\n${prompt}`);
         }
       }
 
       counter++;
+
+      if (counter >= this.max_iterations) {
+        done = true;
+      }
+    }
+
+    if (verbose) {
+      console.log(chalk.bold.green("Daydreaming session complete."));
     }
   }
 }
