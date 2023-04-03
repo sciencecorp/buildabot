@@ -17,6 +17,10 @@ const run = async () => {
   agent.init();
 
   const app = express();
+  app.get("/", (req, res) => {
+    res.send("science chimaera 0.2.0");
+  });
+
   const httpServer = http.createServer(app);
 
   new WebsocketInterface(agent, httpServer, "/chat");
