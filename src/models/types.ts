@@ -5,6 +5,7 @@ export type ModelMessage = {
   content?: string;
   index?: number;
   finish_reason?: string;
+  embedding?: number[];
 };
 
 export type ModelManifest = {
@@ -57,3 +58,8 @@ export interface ModelCallbacks {
   onToken?: (delta: ModelMessage) => void;
   onMessage?: (message: ModelMessage) => void;
 }
+
+export type EmbeddingRequest = {
+  model: string;
+  input: string[];
+};

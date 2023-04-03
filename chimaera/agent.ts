@@ -1,8 +1,8 @@
-import { Agent, PluginInvocation } from "../src";
-import { Chat } from "../src/models/api/openai";
+import { Agent, ModelMessage, PluginInvocation } from "../src";
+import { Chat, Complete, Embedding } from "../src/models/api/openai";
 import { PluginOutput } from "../src/plugins";
 import { MessageRoles } from "../src/types";
-import { pluginsPrompt, _detectPluginUse, _handlePluginOutput } from "./prompt";
+import { pluginsPrompt, _detectPluginUse, _handlePluginOutput, compressor } from "./prompt";
 
 export class ChimaeraAgent extends Agent {
   model = "gpt-4";
@@ -31,11 +31,77 @@ Current date: ${new Date().toLocaleDateString("sv")}`;
     _handlePluginOutput(this, input, output);
   detectPluginUse = (response: string): false | PluginInvocation => _detectPluginUse(response);
 
+  apiSpecModel = async (invoke: PluginInvocation) => {
+    const plugin = this.plugins.find((p) => p.manifest.name_for_model === invoke.name);
+    if (!plugin) {
+      return;
+    }
+    const input = await Chat.sync(
+      {
+        messages: [
+          {
+            role: "system",
+            content: `${pluginsPrompt(
+              this.plugins
+            )}\n${plugin.metaprompt()}\n${plugin.apiSpecPrompt()}`,
+          },
+          {
+            role: "user",
+            content: `Is this a good invocation for the ${plugin.manifest.name_for_model} plugin? Does it call the right action and provide properly structured input? If it is, please return the same text. If not, please return the corrected invocation with the right action and appropriately formatted input for the API spec.
+
+            Invocation: <%*??*%>${invoke.name}: ${invoke.action}: ${invoke.input}<%*??*%>`,
+          },
+        ],
+        model: this.model,
+        max_tokens: 250,
+      },
+      {
+        onError: (e) => console.error(e),
+      }
+    );
+    if (!input || !input.content) {
+      return;
+    }
+    const corrected = this.detectPluginUse(input.content);
+    if (!corrected) {
+      return;
+    }
+    return corrected;
+  };
+
+  metaprompt: () => Promise<ModelMessage[]> = async () => {
+    // const compressed = await compressor(this.basePrompt(), this.model);
+    const compressed = false;
+    return [
+      {
+        role: "system",
+        content: compressed ? compressed : this.basePrompt(),
+      },
+    ];
+  };
+
+  compilePrompt = async (messages: ModelMessage[]) => [
+    this.messages[0],
+    {
+      role: "agent",
+    },
+    this.messages[-1],
+  ];
+
   run = async (prompt: string, role?: MessageRoles) => {
     if (!role) {
       role = "user";
     }
-    this.messages.push({ role: role, content: prompt });
+    // const embed = await Embedding.create({
+    //   input: [prompt],
+    //   model: "text-embedding-ada-002",
+    // });
+    // const compressed = await compressor(prompt, this.model);
+    this.messages.push({
+      role: role,
+      content: prompt,
+      // embedding: embed?.embedding,
+    });
     await Chat.sync(
       {
         messages: this.messages,

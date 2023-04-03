@@ -1,4 +1,5 @@
 import { Agent, Plugin, PluginInvocation } from "../src";
+import { Chat, Embedding } from "../src/models/api/openai";
 import { PluginOutput } from "../src/plugins";
 
 export const pluginsPrompt = (plugins: Plugin[]) => `## Plugins
@@ -44,6 +45,20 @@ export const _detectPluginUse = (response: string): false | PluginInvocation => 
       input: input,
     };
   }
-
   return false;
+};
+
+export const compressor = async (text_data: string, model: string = "gpt-4") => {
+  const compressed = await Chat.sync({
+    model: model,
+    messages: [
+      {
+        role: "system",
+        content: `Compress the following text to fit in a Tweet, and such that you (${model}) can reconstruct it as close as possible to the original. This is for yourself. Do not make it human readable. Abuse of language mixing, abbreviations, symbols (unicode and emojis) to aggressively compress it is all allowed, while still keeping ALL of the information to fully reconstruct it.
+
+=== Text to compress ===\n${text_data}`,
+      },
+    ],
+  });
+  return compressed?.content;
 };

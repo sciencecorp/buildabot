@@ -15,16 +15,17 @@ export abstract class Agent {
   messages: ModelMessage[] = [];
   verbose: boolean = false;
   pluginDetectRegex: RegExp | null = null;
+  apiSpecModel?: (invoke: PluginInvocation) => Promise<PluginInvocation | undefined> = undefined;
 
   constructor(plugins: Plugin[]) {
     this.plugins = plugins;
   }
 
-  init() {
-    this.messages = [...this.metaprompt()];
+  async init() {
+    this.messages = [...(await this.metaprompt())];
   }
 
-  metaprompt: () => ModelMessage[] = () => [
+  metaprompt: () => Promise<ModelMessage[]> = async () => [
     {
       role: "system",
       content: this.basePrompt(),
@@ -88,14 +89,16 @@ export abstract class Agent {
       const plugin = this.plugins.find((p) => p.manifest.name_for_model === pluginInvocation.name);
       if (plugin) {
         this.onPluginStart(pluginInvocation);
-        plugin.run(pluginInvocation.action, pluginInvocation.input).then((result) => {
-          if (result.error) {
-            this.onPluginError(pluginInvocation, result.error);
-          } else {
-            this.onPluginMessage(pluginInvocation, result);
-          }
-          this.onPluginFinish(pluginInvocation);
-        });
+        plugin
+          .run(pluginInvocation.action, pluginInvocation.input, this.apiSpecModel)
+          .then((result) => {
+            if (result.error) {
+              this.onPluginError(pluginInvocation, result.error);
+            } else {
+              this.onPluginMessage(pluginInvocation, result);
+            }
+            this.onPluginFinish(pluginInvocation);
+          });
       } else {
         this.onError(`No plugin found for ${pluginInvocation.name}`);
       }

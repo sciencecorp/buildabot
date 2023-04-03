@@ -1,12 +1,9 @@
-import {
-  createParser,
-  ParsedEvent,
-  ReconnectInterval,
-} from "eventsource-parser";
+import { createParser, ParsedEvent, ReconnectInterval } from "eventsource-parser";
 import { Response } from "node-fetch";
 import { makeApiCall, makeStreamingApiCall } from ".";
 import { MessageRoles } from "../../types";
 import {
+  EmbeddingRequest,
   ModelCallbacks,
   ModelChatRequest,
   ModelCompletionRequest,
@@ -171,7 +168,12 @@ export const Complete = {
       headers(),
       async (data: Response) => {
         const response = (await data.json()) as CompletionStreamingResponse;
-        return response.choices[0];
+        const r = response.choices[0];
+        return {
+          content: r.text,
+          index: r.index,
+          finish_reason: r.finish_reason,
+        };
       },
       callbacks
     ),
@@ -186,4 +188,14 @@ export const Complete = {
     );
     return response;
   },
+};
+
+export const Embedding = {
+  create: async (req: EmbeddingRequest, callbacks?: ModelCallbacks) =>
+    makeApiCall("https://api.openai.com/v1/embeddings", req, headers(), async (data: Response) => {
+      const response = await data.json();
+      return {
+        content: response.data,
+      };
+    }),
 };

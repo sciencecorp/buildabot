@@ -1,4 +1,4 @@
-import { PluginManifest, PluginOutput } from "./types";
+import { PluginInvocation, PluginManifest, PluginOutput } from "./types";
 
 export abstract class Plugin {
   manifest: PluginManifest;
@@ -6,18 +6,21 @@ export abstract class Plugin {
     this.manifest = manifest;
   }
 
-  metaprompt() {
-    return (
-      `\n### ${this.manifest.name_for_model}\n${this.manifest.description_for_model}\n` +
-      (undefined !== this.manifest.api_spec
-        ? `The API spec for the ${this.manifest.name_for_model} plugin is:\n\n${JSON.stringify(
-            this.manifest.api_spec,
-            null,
-            2
-          )}`
-        : "")
-    );
-  }
+  metaprompt = () =>
+    `\n### ${this.manifest.name_for_model}\n${this.manifest.description_for_model}`;
 
-  abstract run(action: string, input: string): Promise<PluginOutput>;
+  apiSpecPrompt = () =>
+    undefined !== this.manifest.api_spec
+      ? `The API spec for the ${this.manifest.name_for_model} plugin is:\n\n${JSON.stringify(
+          this.manifest.api_spec,
+          null,
+          2
+        )}`
+      : "";
+
+  abstract run(
+    action: string,
+    input: string,
+    apiSpecModel?: (invoke: PluginInvocation) => Promise<PluginInvocation | undefined>
+  ): Promise<PluginOutput>;
 }

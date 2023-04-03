@@ -32,7 +32,7 @@ If the user asks you for web content that you don't know, you should not hestita
 
     return {
       name: this.manifest.name_for_model,
-      output: browserAgent.messages[-1].content,
+      output: browserAgent.messages[-1]?.content,
     };
   }
 }
