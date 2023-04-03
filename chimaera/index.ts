@@ -16,9 +16,6 @@ const run = async () => {
   const agent = new ChimaeraAgent(plugins);
   agent.init();
 
-  // agent.run("how many soccer players are there in the world?");
-  // agent.run("create a new directory at /etc/var/foo");
-
   const app = express();
   const httpServer = http.createServer(app);
 
