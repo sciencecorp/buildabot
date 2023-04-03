@@ -1,5 +1,5 @@
 import { Agent, Plugin, PluginInvocation } from "../src";
-import { Chat, Embedding } from "../src/models/api/openai";
+import { Chat } from "../src/models/api/openai";
 import { PluginOutput } from "../src/plugins";
 
 export const pluginsPrompt = (plugins: Plugin[]) => `## Plugins

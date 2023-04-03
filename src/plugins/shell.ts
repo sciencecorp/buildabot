@@ -21,17 +21,22 @@ This plugin is stateful and will remember the state of the shell between invocat
   }
 
   actions = {
-    exec: (command: string) => {},
+    // TODO: implement exec
+    exec: async (command: string) => "",
   };
 
   async run(action: string, input: string) {
-    console.log("Running plugin " + this.manifest.name_for_human);
-    console.log("Action: " + action);
-    console.log("Input: " + input);
-
+    let observation;
+    switch (action) {
+      case "exec":
+        observation = await this.actions.exec(input);
+        break;
+      default:
+        return Promise.reject(`Unknown action: ${action}`);
+    }
     return {
       name: this.manifest.name_for_model,
-      output: "This is the output from the plugin",
+      output: observation,
     };
   }
 }

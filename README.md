@@ -30,6 +30,11 @@ npm start
 
 During project generation you can choose to optionally include an example agent as a starting point.
 
+## Known Issues
+
+- Observations in the Browser plugin are frequently far too large to fit in model context, and splitting is not currently implemented.
+- The Shell plugin is currently a stub.
+
 ## Todo
 
 - handle plugin use in streaming agents

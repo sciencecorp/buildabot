@@ -2,7 +2,6 @@ import chalk from "chalk";
 import { Critic } from "./critic";
 import { Generator } from "./generator";
 import { Daydreamer, Plugin } from "../../src/plugins";
-import { OpenApiPlugin } from "../../src/plugins/openapi";
 
 const verbose = true;
 
