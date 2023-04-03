@@ -1,3 +1,4 @@
+import chalk from "chalk";
 import * as http from "http";
 import WebSocket, { WebSocketServer } from "ws";
 import { ModelMessage } from "../models/types";
@@ -33,7 +34,14 @@ export class WebsocketInterface {
     this.agent = agent;
     this.server = new WebSocketServer({ server: server, path: path });
 
-    this.server.on("connection", (ws) => {
+    this.server.on("connection", (ws, req) => {
+      const urlParams = new URLSearchParams(req.url?.split("?")[1] || "");
+      const params = Object.fromEntries(urlParams.entries());
+      if (params.token !== process.env.ACCESS_TOKEN) {
+        console.log(chalk.red("Unauthorized connection attempt, rejecting."));
+        ws.close();
+        return;
+      }
       const handlers = {
         onMessage: (message: ModelMessage) => Handlers.onMessage(ws, message),
         onToken: (delta: ModelMessage) => Handlers.onToken(ws, delta),

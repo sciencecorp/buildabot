@@ -18,6 +18,11 @@ const run = async () => {
 
   const app = express();
   app.get("/", (req, res) => {
+    if (req.query.token !== process.env.ACCESS_TOKEN) {
+      res.status(401).send("Unauthorized");
+      return;
+    }
+
     res.send("science chimaera 0.2.0");
   });
 
