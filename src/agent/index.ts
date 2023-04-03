@@ -68,7 +68,11 @@ export abstract class Agent {
       if (plugin) {
         this.onPluginStart(pluginInvocation);
         plugin.run(pluginInvocation.action, pluginInvocation.input).then((result) => {
-          this.onPluginMessage(pluginInvocation, result);
+          if (result.error) {
+            this.onPluginError(pluginInvocation, result.error);
+          } else {
+            this.onPluginMessage(pluginInvocation, result);
+          }
           this.onPluginFinish(pluginInvocation);
         });
       } else {
