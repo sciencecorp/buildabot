@@ -18,9 +18,5 @@ export abstract class Plugin {
         )}`
       : "";
 
-  abstract run(
-    action: string,
-    input: string,
-    apiSpecModel?: (invoke: PluginInvocation) => Promise<PluginInvocation | undefined>
-  ): Promise<PluginOutput>;
+  abstract run(action: string, input: string): Promise<PluginOutput>;
 }

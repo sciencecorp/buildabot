@@ -32,24 +32,23 @@ Current date: ${new Date().toLocaleDateString("sv")}`;
   detectPluginUse = (response: string): false | PluginInvocation => _detectPluginUse(response);
 
   apiSpecModel = async (invoke: PluginInvocation) => {
+    console.log(`Checking plugin invocation with apiSpecModel: ${JSON.stringify(invoke)}`);
     const plugin = this.plugins.find((p) => p.manifest.name_for_model === invoke.name);
     if (!plugin) {
-      return;
+      return Promise.reject("Plugin not found");
     }
     const input = await Chat.sync(
       {
         messages: [
           {
             role: "system",
-            content: `${pluginsPrompt(
-              this.plugins
-            )}\n${plugin.metaprompt()}\n${plugin.apiSpecPrompt()}`,
+            content: `${pluginsPrompt([plugin])}\n${plugin.apiSpecPrompt()}`,
           },
           {
             role: "user",
-            content: `Is this a good invocation for the ${plugin.manifest.name_for_model} plugin? Does it call the right action and provide properly structured input? If it is, please return the same text. If not, please return the corrected invocation with the right action and appropriately formatted input for the API spec.
+            content: `<%*??*%>${invoke.name}: ${invoke.action}: ${invoke.input}<%*??*%>
 
-            Invocation: <%*??*%>${invoke.name}: ${invoke.action}: ${invoke.input}<%*??*%>`,
+Is this a correct invocation for the ${plugin.manifest.name_for_model} plugin? If it is, return the same text. If not, return the corrected invocation with the right pluginAction and pluginInput EXACTLY formatted per the provided specification in the schema and syntax required.`,
           },
         ],
         model: this.model,
@@ -60,11 +59,11 @@ Current date: ${new Date().toLocaleDateString("sv")}`;
       }
     );
     if (!input || !input.content) {
-      return;
+      return Promise.reject("Could not get API spec from model");
     }
     const corrected = this.detectPluginUse(input.content);
     if (!corrected) {
-      return;
+      return Promise.reject("Could not detect plugin invocation in response");
     }
     return corrected;
   };

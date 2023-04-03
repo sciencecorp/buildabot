@@ -68,29 +68,7 @@ export class OpenApiPlugin extends Plugin {
     return client;
   };
 
-  async run(
-    action: string,
-    input: string,
-    apiSpecModel?: (invoke: PluginInvocation) => Promise<PluginInvocation | undefined>
-  ) {
-    if (apiSpecModel) {
-      console.log(`Expanding input with API spec model: ${action} ${input}`);
-      const expandedInput = await apiSpecModel({
-        name: this.manifest.name_for_model,
-        action,
-        input,
-      });
-      if (expandedInput === undefined) {
-        return {
-          name: this.manifest.name_for_model,
-          error: "Failed to expand input with API spec model",
-        };
-      }
-      action = expandedInput.action;
-      input = expandedInput.input;
-      console.log(`Expanded result: ${action}: ${input}`);
-    }
-
+  async run(action: string, input: string) {
     console.log(
       `Running plugin: name=${this.manifest.name_for_model} action=${action} input=${JSON.stringify(
         input

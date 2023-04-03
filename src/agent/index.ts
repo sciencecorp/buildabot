@@ -15,7 +15,7 @@ export abstract class Agent {
   messages: ModelMessage[] = [];
   verbose: boolean = false;
   pluginDetectRegex: RegExp | null = null;
-  apiSpecModel?: (invoke: PluginInvocation) => Promise<PluginInvocation | undefined> = undefined;
+  apiSpecModel: (invoke: PluginInvocation) => Promise<PluginInvocation> = async (invoke) => invoke;
 
   constructor(plugins: Plugin[]) {
     this.plugins = plugins;
@@ -89,15 +89,24 @@ export abstract class Agent {
       const plugin = this.plugins.find((p) => p.manifest.name_for_model === pluginInvocation.name);
       if (plugin) {
         this.onPluginStart(pluginInvocation);
-        plugin
-          .run(pluginInvocation.action, pluginInvocation.input, this.apiSpecModel)
-          .then((result) => {
-            if (result.error) {
-              this.onPluginError(pluginInvocation, result.error);
-            } else {
-              this.onPluginMessage(pluginInvocation, result);
-            }
-            this.onPluginFinish(pluginInvocation);
+
+        this.apiSpecModel({
+          name: plugin.manifest.name_for_model,
+          action: pluginInvocation.action,
+          input: pluginInvocation.input,
+        })
+          .then((expanded: PluginInvocation) => {
+            plugin.run(expanded.action, pluginInvocation.input).then((result) => {
+              if (result.error) {
+                this.onPluginError(pluginInvocation, result.error);
+              } else {
+                this.onPluginMessage(pluginInvocation, result);
+              }
+              this.onPluginFinish(pluginInvocation);
+            });
+          })
+          .catch(() => {
+            this.onPluginError(pluginInvocation, "Failed to expand input with API spec model");
           });
       } else {
         this.onError(`No plugin found for ${pluginInvocation.name}`);

@@ -8,9 +8,11 @@ You have access to several plugins. To use a plugin, you must generate a respons
 
 <%*??*%>pluginName: pluginAction: pluginInput<%*??*%>
 
-For example, if you wanted to use the "Browser" plugin to search for "how many neurons are in the human brain", you would return the following:
+Here are some examples, which may or may not be valid for the plugins you have access to:
 
 <%*??*%>Browser: search: how many neurons are in the human brain<%*??*%>
+<%*??*%>retrieval: query: {"queries": [{"query": "an important fact to look up"}]}<%*??*%>
+<%*??*%>daydream: an important topic<%*??*%>
 
 The plugin name and plugin action must not contain colons. The plugin input can contain colons, but must not contain the <%*??*%> string.
 
