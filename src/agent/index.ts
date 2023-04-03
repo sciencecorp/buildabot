@@ -1,13 +1,14 @@
 import { ModelMessage } from "../models/types";
 import { Plugin } from "../plugins";
 import { PluginInvocation, PluginOutput } from "../plugins/types";
+import { MessageRoles } from "../types";
 import { AgentCallbacks } from "./types";
 
 export abstract class Agent {
   abstract basePrompt: () => string;
   abstract detectPluginUse: (response: string) => false | PluginInvocation;
   abstract handlePluginOutput: (input: PluginInvocation, output: PluginOutput) => void;
-  abstract run(prompt: string): void;
+  abstract run(prompt: string, role?: MessageRoles): void;
 
   plugins: Plugin[] = [];
   handlers: AgentCallbacks[] = [];

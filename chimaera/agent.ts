@@ -1,10 +1,11 @@
 import { Agent, PluginInvocation } from "../src";
 import { Chat } from "../src/models/api/openai";
 import { PluginOutput } from "../src/plugins";
+import { MessageRoles } from "../src/types";
 import { pluginsPrompt, _detectPluginUse, _handlePluginOutput } from "./prompt";
 
 export class ChimaeraAgent extends Agent {
-  model = "gpt-3.5-turbo";
+  model = "gpt-4";
   max_tokens = 500;
   temperature = 0.5;
   verbose = true;
@@ -22,14 +23,19 @@ Knowledge cutoff: 2021-09
 Current date: ${new Date().toLocaleDateString("sv")}`;
 
   basePrompt = () =>
-    this.chimaeraPrompt() + (this.plugins.length > 0 ? "\n\n" + pluginsPrompt(this.plugins) : "");
+    this.chimaeraPrompt() +
+    (this.plugins.length > 0 ? "\n\n" + pluginsPrompt(this.plugins) : "");
 
   handlePluginOutput = (input: PluginInvocation, output: PluginOutput) =>
     _handlePluginOutput(this, input, output);
-  detectPluginUse = (response: string): false | PluginInvocation => _detectPluginUse(response);
+  detectPluginUse = (response: string): false | PluginInvocation =>
+    _detectPluginUse(response);
 
-  run = async (prompt: string) => {
-    this.messages.push({ role: "user", content: prompt });
+  run = async (prompt: string, role?: MessageRoles) => {
+    if (!role) {
+      role = "user";
+    }
+    this.messages.push({ role: role, content: prompt });
     await Chat.sync(
       {
         messages: this.messages,

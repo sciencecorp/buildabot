@@ -23,19 +23,21 @@ export const _handlePluginOutput = (
   output: PluginOutput
 ) => {
   if (output.error) {
-    agent.messages.push({
-      role: "system",
-      content: `<%*!!*%>${output.name}: ERROR: ${output.error}<%*!!*%>`,
-    });
+    agent.run(
+      `The plugin returned: ${input.name}: ${input.action} ERROR: ${output.error}`,
+      "system"
+    );
   } else {
-    agent.messages.push({
-      role: "system",
-      content: `<%*!!*%>${output.name}: ${input.action}: ${output.output}<%*!!*%>`,
-    });
+    agent.run(
+      `The plugin returned: ${input.name}: ${input.action}: ${output.output}`,
+      "system"
+    );
   }
 };
 
-export const _detectPluginUse = (response: string): false | PluginInvocation => {
+export const _detectPluginUse = (
+  response: string
+): false | PluginInvocation => {
   const pattern = /<%\*\?\?\*%>([^:]+):\s*([^:]+):\s*([^<]+)<%\*\?\?\*%>/;
   const match = response.match(pattern);
 

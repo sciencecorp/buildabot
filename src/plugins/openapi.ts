@@ -61,7 +61,9 @@ export class OpenApiPlugin extends Plugin {
     if (this.manifest.api?.url === undefined) {
       return Promise.reject("No API URL defined for plugin");
     }
-    const client = new OpenAPIClientAxios({ definition: this.manifest.api.url });
+    const client = new OpenAPIClientAxios({
+      definition: this.manifest.api.url,
+    });
     await client.init();
     return client;
   };
@@ -75,12 +77,29 @@ export class OpenApiPlugin extends Plugin {
       this.apiClient = await this.createAPIClient();
     }
 
-    const result = await this.apiClient.client.callOperation(action, input);
-    console.log("Result: " + result);
+    const operation = this.apiClient.client.api.getOperations().find(
+      // this is a hack, the operationId looks like `upsert_upsert_post` for some reason
+      (op) => op.operationId?.includes(action)
+    );
+
+    let output = "";
+    if (operation) {
+      const axiosInstance = this.apiClient.client.api.getAxiosInstance();
+      const axiosConfig = this.apiClient.client.api.getAxiosConfigForOperation(
+        operation,
+        []
+      );
+      const response = await axiosInstance.request({
+        ...axiosConfig,
+        ...{ baseURL: "http://0.0.0.0:8000" }, // this is a hack as well
+        data: JSON.parse(input),
+      });
+      output = JSON.stringify(response.data);
+    }
 
     return {
       name: this.manifest.name_for_model,
-      output: "This is the output from the plugin",
+      output,
     };
   }
 }

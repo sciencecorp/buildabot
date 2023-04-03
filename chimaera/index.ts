@@ -1,12 +1,20 @@
 import express from "express";
 import http from "http";
-import { Browser, Daydream, Shell } from "../src/plugins";
-import { ChimaeraDreamer } from "./daydreamer";
-import { ChimaeraAgent } from "./agent";
 import { WebsocketInterface } from "../src";
+import { Browser, Daydream, Shell } from "../src/plugins";
+import { OpenApiPlugin } from "../src/plugins/openapi";
+import { ChimaeraAgent } from "./agent";
+import { ChimaeraDreamer } from "./daydreamer";
 
 const run = async () => {
-  const plugins = [new Browser(), new Shell(), new Daydream(new ChimaeraDreamer())];
+  const plugins = [
+    new Browser(),
+    new Shell(),
+    new Daydream(new ChimaeraDreamer()),
+    await OpenApiPlugin.fromUrl(
+      "http://0.0.0.0:8000/.well-known/ai-plugin.json"
+    ),
+  ];
   const agent = new ChimaeraAgent(plugins);
   agent.init();
 
@@ -19,7 +27,7 @@ const run = async () => {
   new WebsocketInterface(agent, httpServer, "/chat");
 
   const listen = () => {
-    const port = process.env.PORT || 8000;
+    const port = process.env.PORT || 8765;
     httpServer.listen(port, () => {
       console.log(`Listening on port ${port}`);
     });
