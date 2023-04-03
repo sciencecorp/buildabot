@@ -69,33 +69,42 @@ export class OpenApiPlugin extends Plugin {
   };
 
   async run(action: string, input: string) {
-    console.log("Running plugin " + this.manifest.name_for_human);
-    console.log("Action: " + action);
-    console.log("Input: " + input);
-
-    if (this.apiClient === undefined) {
-      this.apiClient = await this.createAPIClient();
-    }
-
-    const operation = this.apiClient.client.api.getOperations().find(
-      // this is a hack, the operationId looks like `upsert_upsert_post` for some reason
-      (op) => op.operationId?.includes(action)
+    console.log(
+      `Running plugin: name=${this.manifest.name_for_model} action=${action} input=${JSON.stringify(
+        input
+      )}`
     );
 
-    let output = "";
-    if (operation) {
-      const axiosInstance = this.apiClient.client.api.getAxiosInstance();
-      const axiosConfig = this.apiClient.client.api.getAxiosConfigForOperation(operation, []);
-      const response = await axiosInstance.request({
-        ...axiosConfig,
-        data: JSON.parse(input),
-      });
-      output = JSON.stringify(response.data);
-    }
+    try {
+      if (this.apiClient === undefined) {
+        this.apiClient = await this.createAPIClient();
+      }
 
-    return {
-      name: this.manifest.name_for_model,
-      output,
-    };
+      const operation = this.apiClient.client.api.getOperations().find(
+        // this is a hack, the operationId looks like `upsert_upsert_post` for some reason
+        (op) => op.operationId?.includes(action)
+      );
+
+      let output = "";
+      if (operation) {
+        const axiosInstance = this.apiClient.client.api.getAxiosInstance();
+        const axiosConfig = this.apiClient.client.api.getAxiosConfigForOperation(operation, []);
+        const response = await axiosInstance.request({
+          ...axiosConfig,
+          data: JSON.parse(input),
+        });
+        output = JSON.stringify(response.data);
+      }
+
+      return {
+        name: this.manifest.name_for_model,
+        output,
+      };
+    } catch (err: unknown) {
+      return {
+        name: this.manifest.name_for_model,
+        error: (err as Error).message,
+      };
+    }
   }
 }

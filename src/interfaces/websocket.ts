@@ -38,7 +38,7 @@ export class WebsocketInterface {
       const urlParams = new URLSearchParams(req.url?.split("?")[1] || "");
       const params = Object.fromEntries(urlParams.entries());
       if (params.token !== process.env.ACCESS_TOKEN) {
-        console.log(chalk.red("Unauthorized connection attempt, rejecting."));
+        console.log(chalk.red(`Unauthorized connection attempt, rejecting. url=${req.url}`));
         ws.close();
         return;
       }

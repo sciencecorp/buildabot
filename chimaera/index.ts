@@ -1,13 +1,13 @@
 import express from "express";
 import http from "http";
-import { WebsocketInterface } from "../src";
+import { Plugin, WebsocketInterface } from "../src";
 import { Browser, Daydream, Shell } from "../src/plugins";
 import { OpenApiPlugin } from "../src/plugins/openapi";
 import { ChimaeraAgent } from "./agent";
 import { ChimaeraDreamer } from "./daydreamer";
 
 const run = async () => {
-  const plugins = [new Browser(), new Shell(), new Daydream(new ChimaeraDreamer())];
+  const plugins: Plugin[] = [new Browser(), new Shell(), new Daydream(new ChimaeraDreamer())];
 
   if (process.env.RETRIEVAL_PLUGIN_URL) {
     plugins.push(await OpenApiPlugin.fromUrl(process.env.RETRIEVAL_PLUGIN_URL));
