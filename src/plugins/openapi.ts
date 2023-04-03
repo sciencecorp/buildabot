@@ -88,7 +88,6 @@ export class OpenApiPlugin extends Plugin {
       const axiosConfig = this.apiClient.client.api.getAxiosConfigForOperation(operation, []);
       const response = await axiosInstance.request({
         ...axiosConfig,
-        ...{ baseURL: "" }, // this is a hack as well
         data: JSON.parse(input),
       });
       output = JSON.stringify(response.data);
