@@ -2,3 +2,4 @@
 *.ipynb
 node_modules/
 scratch*
+dist
