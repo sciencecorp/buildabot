@@ -6,7 +6,7 @@ A production-grade framework for building AI agents.
 
 Build-a-bot is oriented around four basic components:
 
-- One or more _models_, which make API calls out to LLMs. (Or some other model.) Models never run within a bot; they are always called over then network.
+- One or more _models_, which make API calls out to LLMs. Models never run in-process; they are always called over then network.
 - Zero or more _plugins_, which can be used by agents to access external tools and resources.
 - One or more _agents_, which compose models, prompts and plugins into meaningful behavior.
 - One or more _interfaces_, which expose functionality of your agent(s) to users, such as via a websocket, Slack bot, over email or so on.
