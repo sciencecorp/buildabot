@@ -19,6 +19,10 @@ export const makeStreamingApiCall = async (
   })
     .then(async (res) => {
       if (!res.ok) {
+        console.error(res.status);
+        console.error(res.statusText);
+        console.error(res.text);
+        console.log("Data: " + JSON.stringify(data));
         throw res;
       }
       callbacks?.onStart ? callbacks.onStart() : null;

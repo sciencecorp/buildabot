@@ -15,6 +15,7 @@ export abstract class Agent {
   messages: ModelMessage[] = [];
   verbose: boolean = false;
   pluginDetectRegex: RegExp | null = null;
+  currentStreamingMessage: ModelMessage | null = null;
   apiSpecModel: (invoke: PluginInvocation) => Promise<PluginInvocation> = async (invoke) => invoke;
 
   constructor(plugins: Plugin[]) {
@@ -42,9 +43,8 @@ export abstract class Agent {
   addHandler = (callbacks: AgentCallbacks) => this.handlers.push(callbacks);
 
   onError = (err: any) => {
-    console.log("Error: " + err);
-    console.log("Error: " + err.message);
-    this.handlers.forEach((h) => (h.onError ? h.onError(err) : null));
+    console.log("Error: " + JSON.stringify(err));
+    this.handlers.forEach((h) => (h.onError ? h.onError(err.message) : null));
   };
 
   onPluginStart = (input: PluginInvocation) =>
@@ -59,9 +59,34 @@ export abstract class Agent {
   };
 
   onStart = () => this.handlers.forEach((h) => (h.onStart ? h.onStart() : null));
-  onFinish = () => this.handlers.forEach((h) => (h.onFinish ? h.onFinish() : null));
-  onToken = (delta: ModelMessage) =>
+  onFinish = () => {
+    if (this.currentStreamingMessage) {
+      this.onMessage
+        ? this.onMessage({
+            role: this.currentStreamingMessage.role,
+            content: this.currentStreamingMessage.content,
+          })
+        : null;
+    }
+    this.handlers.forEach((h) => (h.onFinish ? h.onFinish() : null));
+  };
+  onToken = (delta: ModelMessage) => {
+    if (undefined === delta.content && undefined === delta.role) {
+      return;
+    }
+
     this.handlers.forEach((h) => (h.onToken ? h.onToken(delta) : null));
+
+    if (!this.currentStreamingMessage) {
+      this.currentStreamingMessage = {};
+    }
+
+    if (delta.role) {
+      this.currentStreamingMessage.role = delta.role;
+    } else if (delta.content && delta.content != undefined) {
+      this.currentStreamingMessage.content += delta.content;
+    }
+  };
 
   onMessage = (msg: ModelMessage): void => {
     if (undefined === msg.content) {
@@ -74,16 +99,20 @@ export abstract class Agent {
       console.log(`Message: ${msg.content}`);
     }
 
-    const pluginInvocation = this.detectPluginUse(msg.content);
+    if (this.currentStreamingMessage) {
+      this.currentStreamingMessage = null;
+    } else {
+      this.handlers.forEach((h) =>
+        h.onMessage
+          ? h.onMessage({
+              role: msg.role,
+              content: this.filterPluginInvocation(msg.content?.trim() || ""),
+            })
+          : null
+      );
+    }
 
-    this.handlers.forEach((h) =>
-      h.onMessage
-        ? h.onMessage({
-            role: msg.role,
-            content: this.filterPluginInvocation(msg.content?.trim() || ""),
-          })
-        : null
-    );
+    const pluginInvocation = this.detectPluginUse(msg.content);
 
     if (pluginInvocation) {
       const plugin = this.plugins.find((p) => p.manifest.name_for_model === pluginInvocation.name);

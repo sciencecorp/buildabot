@@ -6,7 +6,7 @@ import { pluginsPrompt, _detectPluginUse, _handlePluginOutput } from "../prompt"
 export class Critic extends Agent {
   model = "gpt-3.5-turbo";
   max_tokens = 500;
-  temperature = 0.5;
+  temperature = 0.3;
   verbose = true;
 
   basePrompt = () =>

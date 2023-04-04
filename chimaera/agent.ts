@@ -7,7 +7,7 @@ import { pluginsPrompt, _detectPluginUse, _handlePluginOutput, compressor } from
 export class ChimaeraAgent extends Agent {
   model = "gpt-4";
   max_tokens = 500;
-  temperature = 0.5;
+  temperature = 0.15;
   verbose = true;
 
   chimaeraPrompt =
@@ -101,7 +101,7 @@ Is this a correct invocation for the ${plugin.manifest.name_for_model} plugin? I
       content: prompt,
       // embedding: embed?.embedding,
     });
-    await Chat.sync(
+    await Chat.stream(
       {
         messages: this.messages,
         model: this.model,
