@@ -6,7 +6,7 @@ import { pluginsPrompt, _detectPluginUse, _handlePluginOutput, compressor } from
 
 export class ChimaeraAgent extends Agent {
   model = "gpt-4";
-  max_tokens = 500;
+  max_tokens = 750;
   temperature = 0.15;
   verbose = true;
 

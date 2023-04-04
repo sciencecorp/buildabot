@@ -78,7 +78,9 @@ export abstract class Agent {
     this.handlers.forEach((h) => (h.onToken ? h.onToken(delta) : null));
 
     if (!this.currentStreamingMessage) {
-      this.currentStreamingMessage = {};
+      this.currentStreamingMessage = {
+        content: "",
+      };
     }
 
     if (delta.role) {
