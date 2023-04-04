@@ -6,7 +6,7 @@ import { OpenApiPlugin } from "../src/plugins/openapi";
 import { ChimaeraAgent } from "./agent";
 import { ChimaeraDreamer } from "./daydreamer";
 
-const run = async () => {
+async function makeAgent() {
   const retrievalPlugin = process.env.RETRIEVAL_PLUGIN_URL
     ? [await OpenApiPlugin.fromUrl(process.env.RETRIEVAL_PLUGIN_URL)]
     : [];
@@ -21,6 +21,10 @@ const run = async () => {
   const agent = new ChimaeraAgent(plugins);
   agent.init();
 
+  return agent;
+}
+
+const run = async () => {
   const app = express();
   app.get("/", (req, res) => {
     if (req.query.token !== process.env.ACCESS_TOKEN) {
@@ -33,7 +37,7 @@ const run = async () => {
 
   const httpServer = http.createServer(app);
 
-  new WebsocketInterface(agent, httpServer, "/chat");
+  new WebsocketInterface(makeAgent, httpServer, "/chat");
 
   const listen = () => {
     const port = process.env.PORT || 8765;
