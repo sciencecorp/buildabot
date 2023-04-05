@@ -29,11 +29,7 @@ export type WebsocketMessage = {
 export class WebsocketInterface {
   server: WebSocketServer;
 
-  constructor(
-    makeAgent: () => Promise<Agent>,
-    server: http.Server,
-    path: string
-  ) {
+  constructor(makeAgent: () => Promise<Agent>, server: http.Server, path: string) {
     this.server = new WebSocketServer({ server: server, path: path });
 
     this.server.on("connection", async (ws, req) => {
@@ -41,11 +37,7 @@ export class WebsocketInterface {
       const urlParams = new URLSearchParams(req.url?.split("?")[1] || "");
       const params = Object.fromEntries(urlParams.entries());
       if (params.token !== process.env.ACCESS_TOKEN) {
-        console.log(
-          chalk.red(
-            `Unauthorized connection attempt, rejecting. url=${req.url}`
-          )
-        );
+        console.log(chalk.red(`Unauthorized connection attempt, rejecting. url=${req.url}`));
         ws.close();
         return;
       }
@@ -55,10 +47,8 @@ export class WebsocketInterface {
         onError: (err: string) => Handlers.onError(ws, err),
         onStart: () => Handlers.onStart(ws),
         onFinish: () => Handlers.onFinish(ws),
-        onPluginStart: (plugin: PluginInvocation) =>
-          Handlers.onPluginStart(ws, plugin),
-        onPluginFinish: (plugin: PluginInvocation) =>
-          Handlers.onPluginFinish(ws, plugin),
+        onPluginStart: (plugin: PluginInvocation) => Handlers.onPluginStart(ws, plugin),
+        onPluginFinish: (plugin: PluginInvocation) => Handlers.onPluginFinish(ws, plugin),
         onPluginError: (plugin: PluginInvocation, err: string) =>
           Handlers.onPluginError(ws, plugin, err),
         onPluginMessage: (plugin: PluginInvocation, output: PluginOutput) =>
@@ -67,10 +57,7 @@ export class WebsocketInterface {
 
       agent.addHandler(handlers);
 
-      ws.on(
-        "close",
-        () => (agent.handlers = agent.handlers.filter((h) => h !== handlers))
-      );
+      ws.on("close", () => (agent.handlers = agent.handlers.filter((h) => h !== handlers)));
       ws.on("message", (data) => {
         const message = JSON.parse(data.toString());
         agent.run(message.content);
@@ -130,11 +117,7 @@ const Handlers = {
       message: { role: "system", plugin },
     }),
 
-  onPluginMessage: (
-    ws: WebSocket.WebSocket,
-    plugin: PluginInvocation,
-    output: PluginOutput
-  ) =>
+  onPluginMessage: (ws: WebSocket.WebSocket, plugin: PluginInvocation, output: PluginOutput) =>
     sendJson(ws, {
       type: "plugin-message",
       message: {
@@ -144,11 +127,7 @@ const Handlers = {
       },
     }),
 
-  onPluginError: (
-    ws: WebSocket.WebSocket,
-    plugin: PluginInvocation,
-    error: string
-  ) =>
+  onPluginError: (ws: WebSocket.WebSocket, plugin: PluginInvocation, error: string) =>
     sendJson(ws, {
       type: "plugin-error",
       message: {

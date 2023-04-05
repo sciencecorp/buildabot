@@ -117,7 +117,9 @@ export abstract class Agent {
     const pluginInvocation = this.detectPluginUse(msg.content);
 
     if (pluginInvocation) {
-      const plugin = this.plugins.find((p) => p.manifest.name_for_model === pluginInvocation.name);
+      const plugin = this.plugins.find(
+        (p) => p.manifest.name_for_model.toUpperCase() === pluginInvocation.name.toUpperCase()
+      );
       if (plugin) {
         this.onPluginStart(pluginInvocation);
 

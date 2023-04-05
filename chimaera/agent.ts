@@ -33,7 +33,9 @@ Current date: ${new Date().toLocaleDateString("sv")}`;
 
   apiSpecModel = async (invoke: PluginInvocation) => {
     console.log(`Checking plugin invocation with apiSpecModel: ${JSON.stringify(invoke)}`);
-    const plugin = this.plugins.find((p) => p.manifest.name_for_model === invoke.name);
+    const plugin = this.plugins.find(
+      (p) => p.manifest.name_for_model.toUpperCase() === invoke.name.toUpperCase()
+    );
     if (!plugin) {
       return Promise.reject("Plugin not found");
     }
