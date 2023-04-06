@@ -13,7 +13,10 @@ export class CliInterface {
     const handlers = {
       onToken: (delta: ModelMessage) => this.emitToken(delta),
       onError: (err: string) => console.error("error", err),
-      onFinish: () => rl.prompt(),
+      onFinish: () => {
+        console.log();
+        rl.prompt();
+      },
       onPluginStart: (plugin: PluginInvocation) =>
         console.log("plugin start", plugin),
       onPluginFinish: (plugin: PluginInvocation) =>
@@ -29,7 +32,7 @@ export class CliInterface {
     const rl = readline.createInterface({
       input: process.stdin,
       output: process.stdout,
-      prompt: "You: ",
+      prompt: "user: ",
     });
 
     rl.prompt();
@@ -37,7 +40,6 @@ export class CliInterface {
     rl.on("line", async (line: string) => {
       this.agent.run(line, "user");
     }).on("close", () => {
-      console.log("Have a great day!");
       process.exit(0);
     });
   }

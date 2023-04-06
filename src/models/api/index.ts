@@ -1,6 +1,22 @@
-import fetch from "node-fetch";
-import { ModelCallbacks, ModelMessage } from "../types";
 import { EventSourceParser } from "eventsource-parser";
+import fetch, { RequestInfo, RequestInit } from "node-fetch";
+import { createInterface as readlines } from "readline";
+import { ModelCallbacks, ModelMessage } from "../types";
+
+export async function* fetchEventSource(
+  url: RequestInfo,
+  init?: RequestInit
+): AsyncGenerator<string, void, unknown> {
+  const res = await fetch(url, init);
+  if (!res.ok) throw res;
+
+  for await (const line of readlines(res.body)) {
+    const [event, content] = line.split(": ", 2);
+    if (event === "data") {
+      yield content;
+    }
+  }
+}
 
 export const makeStreamingApiCall = async (
   endpoint: string,

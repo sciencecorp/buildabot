@@ -2,7 +2,12 @@ import { Agent, ModelMessage, PluginInvocation } from "../src";
 import { Chat, Complete, Embedding } from "../src/models/api/openai";
 import { PluginOutput } from "../src/plugins";
 import { MessageRoles } from "../src/types";
-import { pluginsPrompt, _detectPluginUse, _handlePluginOutput, compressor } from "./prompt";
+import {
+  pluginsPrompt,
+  _detectPluginUse,
+  _handlePluginOutput,
+  compressor,
+} from "./prompt";
 
 export class ChimaeraAgent extends Agent {
   model = "gpt-4";
@@ -25,16 +30,21 @@ Current date: ${new Date().toLocaleDateString("sv")}`;
   override pluginDetectRegex = /<%\*\?\?\*%>.*?<%\*\?\?\*%>/gs;
 
   basePrompt = () =>
-    this.chimaeraPrompt() + (this.plugins.length > 0 ? "\n\n" + pluginsPrompt(this.plugins) : "");
+    this.chimaeraPrompt() +
+    (this.plugins.length > 0 ? "\n\n" + pluginsPrompt(this.plugins) : "");
 
   handlePluginOutput = (input: PluginInvocation, output: PluginOutput) =>
     _handlePluginOutput(this, input, output);
-  detectPluginUse = (response: string): false | PluginInvocation => _detectPluginUse(response);
+  detectPluginUse = (response: string): false | PluginInvocation =>
+    _detectPluginUse(response);
 
   apiSpecModel = async (invoke: PluginInvocation) => {
-    console.log(`Checking plugin invocation with apiSpecModel: ${JSON.stringify(invoke)}`);
+    console.log(
+      `Checking plugin invocation with apiSpecModel: ${JSON.stringify(invoke)}`
+    );
     const plugin = this.plugins.find(
-      (p) => p.manifest.name_for_model.toUpperCase() === invoke.name.toUpperCase()
+      (p) =>
+        p.manifest.name_for_model.toUpperCase() === invoke.name.toUpperCase()
     );
     if (!plugin) {
       return Promise.reject("Plugin not found");

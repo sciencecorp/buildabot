@@ -36,6 +36,7 @@
     "ora": "^6.3.0",
     "puppeteer": "^19.8.2",
     "serpapi": "^1.1.1",
+    "tiktoken-node": "^0.0.5",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.2",
     "ws": "^8.13.0"

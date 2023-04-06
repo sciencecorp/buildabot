@@ -1,12 +1,21 @@
-import { createParser, ParsedEvent, ReconnectInterval } from "eventsource-parser";
+import {
+  createParser,
+  ParsedEvent,
+  ReconnectInterval,
+} from "eventsource-parser";
 import { Response } from "node-fetch";
-import { makeApiCall, makeStreamingApiCall } from ".";
+import {
+  makeApiCall,
+  makeStreamingApiCall,
+  fetchEventSource as fetchApiEvents,
+} from ".";
 import { MessageRoles } from "../../types";
 import {
   EmbeddingRequest,
   ModelCallbacks,
   ModelChatRequest,
   ModelCompletionRequest,
+  ModelMessage,
 } from "../types";
 
 type ChatStreamingResponse = {
@@ -107,6 +116,10 @@ const streamingCompletionResponseHandler = (callbacks: ModelCallbacks) => {
   };
 };
 
+function chatRequestBody(req: ModelChatRequest, stream: boolean) {
+  return JSON.stringify(chatData(req, stream));
+}
+
 const chatData = (req: ModelChatRequest, stream: boolean) => {
   return {
     messages: req.messages,
@@ -158,6 +171,18 @@ export const Chat = {
     );
     return response;
   },
+
+  async *events(req: ModelChatRequest) {
+    const request = fetchApiEvents(
+      "https://api.openai.com/v1/chat/completions",
+      { method: "post", body: chatRequestBody(req, true), headers: headers() }
+    );
+    for await (const chunk of request) {
+      if (chunk === "[DONE]") return;
+      const data = JSON.parse(chunk) as ChatStreamingResponse;
+      yield data.choices[0].delta ? data.choices[0].delta : {};
+    }
+  },
 };
 
 export const Complete = {
@@ -192,10 +217,15 @@ export const Complete = {
 
 export const Embedding = {
   create: async (req: EmbeddingRequest, callbacks?: ModelCallbacks) =>
-    makeApiCall("https://api.openai.com/v1/embeddings", req, headers(), async (data: Response) => {
-      const response = await data.json();
-      return {
-        content: response.data,
-      };
-    }),
+    makeApiCall(
+      "https://api.openai.com/v1/embeddings",
+      req,
+      headers(),
+      async (data: Response) => {
+        const response = await data.json();
+        return {
+          content: response.data,
+        };
+      }
+    ),
 };

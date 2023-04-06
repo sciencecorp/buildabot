@@ -6,7 +6,6 @@ dotenv.config();
 
 const run = async () => {
   const agent = await makeAgent();
-
   new CliInterface(agent);
 };
 
