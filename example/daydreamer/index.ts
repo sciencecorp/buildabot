@@ -55,6 +55,9 @@ export class ChimaeraDreamer implements Daydreamer {
         }
       }
 
+      // EXTENSION FOR THE READER:
+      // You should embed the new prompt and save it in a vector store here, to make the results of the daydream self-prompting available for later retrieval and use.
+
       counter++;
 
       if (counter >= this.max_iterations) {
