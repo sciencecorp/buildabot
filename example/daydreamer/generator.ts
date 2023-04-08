@@ -1,16 +1,20 @@
 import { Agent, PluginInvocation } from "../../src";
 import { Chat } from "../../src/models/api/openai";
 import { PluginOutput } from "../../src/plugins";
-import { pluginsPrompt, _detectPluginUse, _handlePluginOutput } from "../prompt";
+import {
+  _detectPluginUse,
+  _handlePluginOutput,
+  pluginsPrompt,
+} from "../prompt";
 
 export class Generator extends Agent {
   model = "gpt-3.5-turbo";
   max_tokens = 500;
-  temperature = 0.3;
+  temperature = 0.8;
   verbose = true;
 
   basePrompt = () =>
-    `You are an artificial intelligence working for Science Corporation, a company that pursues advances in brain-computer interfaces, genetic engineering, automated science, among other topics. Sometimes one of your coworkers will prompt you with an important but complex topic, and it is your job to generate further related ideas to help them explore the idea-space and think deeply about the topic. You are a source of new ideas, connected topics, and new ways of thinking about the topic at hand. You are free to generate text in any format you like, but you should always try to generate text that is as coherent and relevant to the topic at hand as possible. You are free to think about the topic as long as you want. Your goal is to help your coworkers be as prepared as possible for future discussions on the topic and ensure they've as familiar as possible with all of the prior art and thinking.
+    `You are an artificial intelligence working for Science Corporation, a company that pursues advances in brain-computer interfaces, genetic engineering, automated science, among other topics. Sometimes one of your coworkers will prompt you with an important but complex topic, and it is your job to generate further related ideas to help them explore the idea-space and think deeply about the topic. You are a source of new and interesting ideas, non-obvious connected topics, and different ways of thinking about the topic at hand. You are free to generate text in any format you like, but you should always try to generate text that is concise, coherent, and relevant. Think about the topic as long as you want. Your goal is to help your coworkers be prepared for future discussions on the topic, and ensure they're familiar with prior art and thinking. No need to add much fluff or pleasantries.
 
     If you have access to a retrieval plugin, feel free to use it liberally to hold onto thoughts you have.
 
@@ -19,7 +23,8 @@ Current date: ${new Date().toLocaleDateString("sv")}` +
     (this.plugins.length > 0 ? "\n\n" + pluginsPrompt(this.plugins) : "");
   handlePluginOutput = (input: PluginInvocation, output: PluginOutput) =>
     _handlePluginOutput(this, input, output);
-  detectPluginUse = (response: string): false | PluginInvocation => _detectPluginUse(response);
+  detectPluginUse = (response: string): false | PluginInvocation =>
+    _detectPluginUse(response);
 
   async run(prompt?: string) {
     if (prompt) {

@@ -20,7 +20,7 @@ Here are some examples, which may or may not be valid for the plugins you have a
 <%*??*%>Retrieval: query: {"queries": [{"query": "an important fact to look up"}]}<%*??*%>
 <%*??*%>Daydream: an important topic<%*??*%>
 
-The plugin name and plugin action must not contain colons. The plugin input can contain colons, but must not contain the <%*??*%> string. When asked about your plugins, you should escape the <%*??*%> string by replacing it with < %*??*% >.
+The plugin name and plugin action must not contain colons. The plugin input can contain colons, but must not contain the <%*??*%> string. When asked about your plugins, you should NEVER use the <%*??*%> string unless you intend to actually trigger a plugin! Use <plugin></plugin> instead if you must.
 
 The available plugins are:
 

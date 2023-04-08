@@ -1,12 +1,16 @@
 import { Agent, PluginInvocation } from "../../src";
 import { Chat } from "../../src/models/api/openai";
 import { PluginOutput } from "../../src/plugins";
-import { pluginsPrompt, _detectPluginUse, _handlePluginOutput } from "../prompt";
+import {
+  _detectPluginUse,
+  _handlePluginOutput,
+  pluginsPrompt,
+} from "../prompt";
 
 export class Critic extends Agent {
   model = "gpt-3.5-turbo";
   max_tokens = 500;
-  temperature = 0.3;
+  temperature = 0.4;
   verbose = true;
 
   basePrompt = () =>
@@ -19,7 +23,8 @@ Current date: ${new Date().toLocaleDateString("sv")}` +
     (this.plugins.length > 0 ? "\n\n" + pluginsPrompt(this.plugins) : "");
   handlePluginOutput = (input: PluginInvocation, output: PluginOutput) =>
     _handlePluginOutput(this, input, output);
-  detectPluginUse = (response: string): false | PluginInvocation => _detectPluginUse(response);
+  detectPluginUse = (response: string): false | PluginInvocation =>
+    _detectPluginUse(response);
 
   async run(prompt?: string) {
     if (prompt) {
