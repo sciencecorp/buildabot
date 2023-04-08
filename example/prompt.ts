@@ -1,4 +1,10 @@
-import { Agent, ModelChatRequest, ModelMessage, Plugin, PluginInvocation } from "../src";
+import {
+  Agent,
+  ModelChatRequest,
+  ModelMessage,
+  Plugin,
+  PluginInvocation,
+} from "../src";
 import { Chat } from "../src/models/api/openai";
 import { PluginOutput } from "../src/plugins";
 
@@ -14,7 +20,7 @@ Here are some examples, which may or may not be valid for the plugins you have a
 <%*??*%>Retrieval: query: {"queries": [{"query": "an important fact to look up"}]}<%*??*%>
 <%*??*%>Daydream: an important topic<%*??*%>
 
-The plugin name and plugin action must not contain colons. The plugin input can contain colons, but must not contain the <%*??*%> string.
+The plugin name and plugin action must not contain colons. The plugin input can contain colons, but must not contain the <%*??*%> string. When asked about your plugins, you should escape the <%*??*%> string by replacing it with < %*??*% >.
 
 The available plugins are:
 
@@ -31,11 +37,16 @@ export const _handlePluginOutput = (
       "system"
     );
   } else {
-    agent.run(`The plugin returned: ${input.name}: ${input.action}: ${output.output}`, "system");
+    agent.run(
+      `The plugin returned: ${input.name}: ${input.action}: ${output.output}`,
+      "system"
+    );
   }
 };
 
-export const _detectPluginUse = (response: string): false | PluginInvocation => {
+export const _detectPluginUse = (
+  response: string
+): false | PluginInvocation => {
   const pattern = /<%\*\?\?\*%>([^:]+):\s*([^:]+):\s*([^<]+)<%\*\?\?\*%>/;
   const match = response.match(pattern);
 
@@ -85,11 +96,16 @@ export const compressChat = async (
   token_limit: number = 2000,
   model: string = "gpt-4"
 ) => {
-  const compressed = await Chat.sync(chatCompressionRequest(chat_data, token_limit, model));
+  const compressed = await Chat.sync(
+    chatCompressionRequest(chat_data, token_limit, model)
+  );
   return compressed?.content;
 };
 
-export const compressor = async (text_data: string, model: string = "gpt-4") => {
+export const compressor = async (
+  text_data: string,
+  model: string = "gpt-4"
+) => {
   const compressed = await Chat.sync({
     model: model,
     messages: [
