@@ -21,7 +21,7 @@ npx ts-node example/cli.ts
 
 By default this uses GPT-4, OpenAI's latest model which is still in beta, but this is easy to change in [`example/agent.ts`](example/agent.ts).
 
-Poking around this example agent, a derivative of the Chimaera agent we use in our internal tools at [Science](https://science.xyz), should give you a feel for how the framework works. In particular, our goals were to create a framework that is:
+Poking around this example agent which should give you a feel for how the framework works. In particular, our goals were to create a framework that is:
 
 - strongly typed
 - fully asychronous
