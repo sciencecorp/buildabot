@@ -41,7 +41,11 @@ Creating an agent requires implementing four methods and an optional regex, per 
 
 This allows you to flexibly define a syntax for your models to invoke plugins, handle their output and emit appropriate events, all within the context of your core agent loop.
 
+![basic agent example](intro.gif)
+
 For an example of a non-trivial core agent loop, look at the [**Daydreaming** example](example/daydreamer/index.ts). The daydreaming idea involves two agents with slightly different prompts (one biased towards idea generation and one biased towards idea filtering) and interconnects them in a converser pattern.
+
+![daydreaming example](daydream.gif)
 
 Daydreaming is also provided as a plugin within the framework itself in [`src/plugins/daydream.ts`](src/plugins/daydream.ts), and with smart enough prompting can be invoked automatically when the agent feels like it would benefit from some self-reflection to generate better answers.
 
