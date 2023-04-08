@@ -20,7 +20,6 @@ A typical implementation will expose one agent built on a range of models and pr
 
 ## Todo
 
-- handle plugin use in streaming agents
 - smart prompt compiler to stay within context window and generally minimize token use
   - implement agent scratchpad & self-prompting (chain of thought)
 - add tests
