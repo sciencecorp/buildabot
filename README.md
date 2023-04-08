@@ -21,6 +21,8 @@ npx ts-node example/cli.ts
 
 By default this uses GPT-4, OpenAI's latest model which is still in beta, but this is easy to change in [`example/agent.ts`](example/agent.ts).
 
+![basic agent example](intro.gif)
+
 Poking around this example agent which should give you a feel for how the framework works. In particular, our goals were to create a framework that is:
 
 - strongly typed
@@ -40,8 +42,6 @@ Creating an agent requires implementing four methods and an optional regex, per 
 ```
 
 This allows you to flexibly define a syntax for your models to invoke plugins, handle their output and emit appropriate events, all within the context of your core agent loop.
-
-![basic agent example](intro.gif)
 
 For an example of a non-trivial core agent loop, look at the [**Daydreaming** example](example/daydreamer/index.ts). The daydreaming idea involves two agents with slightly different prompts (one biased towards idea generation and one biased towards idea filtering) and interconnects them in a converser pattern.
 
