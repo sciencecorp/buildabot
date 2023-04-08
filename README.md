@@ -6,20 +6,30 @@ A production-grade framework for building AI agents.
 
 ## Getting Started
 
-This repo includes a simple example agent in `example/` which can be run using `ts-node`:
+Set an `OPENAI_API_KEY` environment variable (get your API key [here](https://platform.openai.com/account/api-keys)):
 
-`$ npx ts-node example/cli.ts`
+```
+export OPENAI_API_KEY=<YOUR_API_KEY>
+```
 
-You will need to set an `OPENAI_API_KEY` environment variable first to run it. By default it uses GPT-4, but this is easy to change in [`example/agent.ts`](example/agent.ts).
+Run a simple CLI example using `ts-node`:
 
-Poking around the example agent, a derivative of the Chimaera agent we use in our internal tools at [Science](https://science.xyz), should give you a feel for how the framework works. In particular, our goals were:
+```
+npm install
+npx ts-node example/cli.ts
+```
+
+By default this uses GPT-4, OpenAI's latest model which is still in beta, but this is easy to change in [`example/agent.ts`](example/agent.ts).
+
+Poking around this example agent, a derivative of the Chimaera agent we use in our internal tools at [Science](https://science.xyz), should give you a feel for how the framework works. In particular, our goals were to create a framework that is:
 
 - strongly typed
 - fully asychronous
-- comprehensive handling of hooks; a compact but robust codebase
-- easy to prototype complex agent patterns
+- compact but robust in terms of code
+- easy to prototype with, particularly when dealing with complex agent patterns
+- comprehensive, for example in its handling of hooks
 
-Creating an agent requires implementing four methods and an optional regex per the `Agent` interface defined in [`src/agent/index.ts`](src/agent/index.ts):
+Creating an agent requires implementing four methods and an optional regex, per the `Agent` interface defined in [`src/agent/index.ts`](src/agent/index.ts):
 
 ```
   abstract basePrompt: () => string;
