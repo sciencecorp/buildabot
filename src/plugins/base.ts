@@ -1,4 +1,4 @@
-import { PluginInvocation, PluginManifest, PluginOutput } from "./types";
+import { PluginManifest, PluginOutput } from "./types";
 
 export abstract class Plugin {
   manifest: PluginManifest;

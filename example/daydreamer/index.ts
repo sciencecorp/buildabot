@@ -1,7 +1,7 @@
 import chalk from "chalk";
+import { Daydreamer, Plugin } from "../../src/plugins";
 import { Critic } from "./critic";
 import { Generator } from "./generator";
-import { Daydreamer, Plugin } from "../../src/plugins";
 
 const verbose = true;
 

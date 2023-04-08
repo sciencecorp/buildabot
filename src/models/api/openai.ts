@@ -1,13 +1,12 @@
 import { createParser, ParsedEvent, ReconnectInterval } from "eventsource-parser";
 import { Response } from "node-fetch";
-import { makeApiCall, makeStreamingApiCall, fetchEventSource as fetchApiEvents } from ".";
+import { fetchEventSource as fetchApiEvents, makeApiCall, makeStreamingApiCall } from ".";
 import { MessageRoles } from "../../types";
 import {
   EmbeddingRequest,
   ModelCallbacks,
   ModelChatRequest,
   ModelCompletionRequest,
-  ModelMessage,
 } from "../types";
 
 type ChatStreamingResponse = {

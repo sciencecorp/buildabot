@@ -17,10 +17,8 @@ export class CliInterface {
         console.log();
         rl.prompt();
       },
-      onPluginStart: (plugin: PluginInvocation) =>
-        console.log("plugin start", plugin),
-      onPluginFinish: (plugin: PluginInvocation) =>
-        console.log("plugin finish", plugin),
+      onPluginStart: (plugin: PluginInvocation) => console.log("plugin start", plugin),
+      onPluginFinish: (plugin: PluginInvocation) => console.log("plugin finish", plugin),
       onPluginError: (plugin: PluginInvocation, err: string) =>
         console.error("plugin error", plugin, err),
       onPluginMessage: (plugin: PluginInvocation, output: PluginOutput) =>

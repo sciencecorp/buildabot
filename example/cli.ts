@@ -1,6 +1,6 @@
+import * as dotenv from "dotenv";
 import { CliInterface } from "../src";
 import makeAgent from "./makeAgent";
-import * as dotenv from "dotenv";
 
 dotenv.config();
 

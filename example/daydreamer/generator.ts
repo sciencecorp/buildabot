@@ -1,11 +1,7 @@
 import { Agent, PluginInvocation } from "../../src";
 import { Chat } from "../../src/models/api/openai";
 import { PluginOutput } from "../../src/plugins";
-import {
-  _detectPluginUse,
-  _handlePluginOutput,
-  pluginsPrompt,
-} from "../prompt";
+import { _detectPluginUse, _handlePluginOutput, pluginsPrompt } from "../prompt";
 
 export class Generator extends Agent {
   model = "gpt-3.5-turbo";
@@ -23,8 +19,7 @@ Current date: ${new Date().toLocaleDateString("sv")}` +
     (this.plugins.length > 0 ? "\n\n" + pluginsPrompt(this.plugins) : "");
   handlePluginOutput = (input: PluginInvocation, output: PluginOutput) =>
     _handlePluginOutput(this, input, output);
-  detectPluginUse = (response: string): false | PluginInvocation =>
-    _detectPluginUse(response);
+  detectPluginUse = (response: string): false | PluginInvocation => _detectPluginUse(response);
 
   async run(prompt?: string) {
     if (prompt) {

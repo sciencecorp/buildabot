@@ -1,7 +1,7 @@
 import fetch from "node-fetch";
 import { OpenAPIClientAxios } from "openapi-client-axios";
 import { Plugin } from "./base";
-import { PluginInvocation, PluginManifest } from "./types";
+import { PluginManifest } from "./types";
 
 export class OpenApiPlugin extends Plugin {
   apiClient?: OpenAPIClientAxios;

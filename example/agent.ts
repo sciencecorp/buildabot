@@ -1,8 +1,8 @@
 import { Agent, ModelMessage, PluginInvocation } from "../src";
-import { Chat, Complete, Embedding } from "../src/models/api/openai";
+import { Chat } from "../src/models/api/openai";
 import { PluginOutput } from "../src/plugins";
 import { MessageRoles } from "../src/types";
-import { pluginsPrompt, _detectPluginUse, _handlePluginOutput, compressor } from "./prompt";
+import { _detectPluginUse, _handlePluginOutput, pluginsPrompt } from "./prompt";
 
 export class ChimaeraAgent extends Agent {
   model = "gpt-4";

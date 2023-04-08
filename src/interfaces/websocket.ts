@@ -1,8 +1,8 @@
 import chalk from "chalk";
 import * as http from "http";
 import WebSocket, { WebSocketServer } from "ws";
-import { ModelMessage } from "../models/types";
 import { Agent } from "../agent";
+import { ModelMessage } from "../models/types";
 import { PluginInvocation, PluginOutput } from "../plugins/types";
 import { MessageRoles } from "../types";
 
