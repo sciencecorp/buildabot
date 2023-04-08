@@ -1,8 +1,4 @@
-import {
-  createParser,
-  ParsedEvent,
-  ReconnectInterval,
-} from "eventsource-parser";
+import { createParser, ParsedEvent, ReconnectInterval } from "eventsource-parser";
 import { Response } from "node-fetch";
 import { makeApiCall, makeStreamingApiCall } from ".";
 import { ModelCallbacks, ModelCompletionRequest } from "../types";

@@ -1,14 +1,6 @@
-import {
-  createParser,
-  ParsedEvent,
-  ReconnectInterval,
-} from "eventsource-parser";
+import { createParser, ParsedEvent, ReconnectInterval } from "eventsource-parser";
 import { Response } from "node-fetch";
-import {
-  makeApiCall,
-  makeStreamingApiCall,
-  fetchEventSource as fetchApiEvents,
-} from ".";
+import { makeApiCall, makeStreamingApiCall, fetchEventSource as fetchApiEvents } from ".";
 import { MessageRoles } from "../../types";
 import {
   EmbeddingRequest,
@@ -173,10 +165,11 @@ export const Chat = {
   },
 
   async *events(req: ModelChatRequest) {
-    const request = fetchApiEvents(
-      "https://api.openai.com/v1/chat/completions",
-      { method: "post", body: chatRequestBody(req, true), headers: headers() }
-    );
+    const request = fetchApiEvents("https://api.openai.com/v1/chat/completions", {
+      method: "post",
+      body: chatRequestBody(req, true),
+      headers: headers(),
+    });
     for await (const chunk of request) {
       if (chunk === "[DONE]") return;
       const data = JSON.parse(chunk) as ChatStreamingResponse;
@@ -217,15 +210,10 @@ export const Complete = {
 
 export const Embedding = {
   create: async (req: EmbeddingRequest, callbacks?: ModelCallbacks) =>
-    makeApiCall(
-      "https://api.openai.com/v1/embeddings",
-      req,
-      headers(),
-      async (data: Response) => {
-        const response = await data.json();
-        return {
-          content: response.data,
-        };
-      }
-    ),
+    makeApiCall("https://api.openai.com/v1/embeddings", req, headers(), async (data: Response) => {
+      const response = await data.json();
+      return {
+        content: response.data,
+      };
+    }),
 };
