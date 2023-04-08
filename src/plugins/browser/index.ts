@@ -9,7 +9,7 @@ export class Browser extends Plugin {
     name_for_model: "Browsing",
     description_for_human: "Browsing",
     description_for_model: `This plugin allows you to browse the web. To use it, you can use the following actions:
-- \`browse: [prompt: string]\`: Browse the web in search of an answer to the given prompt
+- \`start: [prompt: string]\`: Browse the web in search of an answer to the given prompt
 
 If the user asks you for web content that you don't know, you should not hestitate to use this plugin to retrieve it. If you would ask the user whether they would like you to check the web for the answer, you should assume YES and use this plugin to do so.`,
     auth: {
