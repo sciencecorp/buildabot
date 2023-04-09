@@ -7,14 +7,14 @@
     "module": "es2022",
     "strict": true,
     "moduleResolution": "node",
-    "resolveJsonModule": true,
     "sourceMap": true,
     "outDir": "dist",
     "skipLibCheck": true,
     "experimentalDecorators": true,
     "allowJs": true,
     "noImplicitAny": true,
-    "target": "es2022"
+    "target": "es2022",
+    "rootDir": "src"
   },
-  "include": ["src/**/*", "example/index.ts"]
+  "include": ["src/**/*"]
 }
