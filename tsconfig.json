@@ -1,18 +1,20 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
-    "strict": true,
+    "declaration": true,
     "esModuleInterop": true,
-    "target": "es2022",
+    "forceConsistentCasingInFileNames": true,
+    "lib": ["es2015", "es2020"],
+    "module": "es2022",
+    "strict": true,
     "moduleResolution": "node",
+    "resolveJsonModule": true,
     "sourceMap": true,
     "outDir": "dist",
     "skipLibCheck": true,
     "experimentalDecorators": true,
     "allowJs": true,
     "noImplicitAny": true,
-    "typeRoots": ["./node_modules/@types", "./types"],
-    "lib": ["es2015", "es2020"]
+    "target": "es2022"
   },
-  "include": ["src/**/*", "chimaera/index.ts"]
+  "include": ["src/**/*", "example/index.ts"]
 }

@@ -2,14 +2,15 @@
   "name": "buildabot",
   "version": "1.0.0",
   "description": "",
-  "main": "index.ts",
+  "type": "module",
+  "module": "./dist/src/index.js",
+  "types": "./dist/src/index.d.ts",
+  "files": [
+    "dist/src/"
+  ],
   "scripts": {
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "bin": {
-    "create-buildabot": "./dist/generator.js",
-    "server": "./dist/server.js"
   },
   "author": "",
   "license": "ISC",
