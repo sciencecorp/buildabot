@@ -1,6 +1,6 @@
-import { Agent, ModelChatRequest, ModelMessage, Plugin, PluginInvocation } from "../src";
+import { Agent, ModelChatRequest, ModelMessage, Plugin, PluginInvocation } from "../src/index";
 import { Chat } from "../src/models/api/openai";
-import { PluginOutput } from "../src/plugins";
+import { PluginOutput } from "../src/plugins/index";
 
 export const pluginsPrompt = (plugins: Plugin[]) => `## Plugins
 

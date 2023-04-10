@@ -1,5 +1,5 @@
 import { ModelMessage } from "../models/types";
-import { Plugin } from "../plugins";
+import { Plugin } from "../plugins/index";
 import { PluginInvocation, PluginOutput } from "../plugins/types";
 import { MessageRoles } from "../types";
 import { AgentCallbacks } from "./types";

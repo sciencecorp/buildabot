@@ -1,6 +1,6 @@
-export { Agent } from "./agent";
+export { Agent } from "./agent/index";
 export { AgentCallbacks } from "./agent/types";
-export { CliInterface, WebsocketInterface } from "./interfaces";
+export { CliInterface, WebsocketInterface } from "./interfaces/index";
 export {
   ModelCallbacks,
   ModelChatRequest,
@@ -12,5 +12,5 @@ export {
   ModelMessage,
   ModelResponseBase,
 } from "./models/types";
-export { Plugin } from "./plugins";
+export { Plugin } from "./plugins/index";
 export { PluginInvocation } from "./plugins/types";

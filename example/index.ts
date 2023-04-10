@@ -1,6 +1,6 @@
 import express from "express";
 import http from "http";
-import { WebsocketInterface } from "../src";
+import { WebsocketInterface } from "../src/index";
 import makeAgent from "./makeAgent";
 
 const run = async () => {

@@ -1,6 +1,6 @@
-import { Agent, ModelMessage, PluginInvocation } from "../src";
+import { Agent, ModelMessage, PluginInvocation } from "../src/index";
 import { Chat } from "../src/models/api/openai";
-import { PluginOutput } from "../src/plugins";
+import { PluginOutput } from "../src/plugins/index";
 import { MessageRoles } from "../src/types";
 import { _detectPluginUse, _handlePluginOutput, pluginsPrompt } from "./prompt";
 

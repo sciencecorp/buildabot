@@ -1,6 +1,6 @@
 import { createParser, ParsedEvent, ReconnectInterval } from "eventsource-parser";
 import { Response } from "node-fetch";
-import { fetchEventSource as fetchApiEvents, makeApiCall, makeStreamingApiCall } from ".";
+import { fetchEventSource as fetchApiEvents, makeApiCall, makeStreamingApiCall } from "./index";
 import { MessageRoles } from "../../types";
 import {
   EmbeddingRequest,

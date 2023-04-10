@@ -1,6 +1,6 @@
 import chalk from "chalk";
 import readline from "node:readline";
-import { Agent } from "../agent";
+import { Agent } from "../agent/index";
 import { ModelMessage } from "../models/types";
 import { PluginInvocation, PluginOutput } from "../plugins/types";
 

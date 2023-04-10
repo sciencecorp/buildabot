@@ -1,5 +1,5 @@
 import chalk from "chalk";
-import { Daydreamer, Plugin } from "../../src/plugins";
+import { Daydreamer, Plugin } from "../../src/plugins/index";
 import { Critic } from "./critic";
 import { Generator } from "./generator";
 

@@ -1,7 +1,7 @@
 import * as dotenv from "dotenv";
 import * as fs from "fs";
 import tiktoken from "tiktoken-node";
-import { ModelMessage } from "../src";
+import { ModelMessage } from "../src/index";
 import { Chat } from "../src/models/api/openai";
 import { chatCompressionRequest } from "./prompt";
 

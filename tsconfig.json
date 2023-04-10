@@ -1,20 +1,21 @@
 {
   "compilerOptions": {
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
     "declaration": true,
     "esModuleInterop": true,
+    "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "lib": ["es2015", "es2020"],
     "module": "es2022",
-    "strict": true,
     "moduleResolution": "node",
-    "sourceMap": true,
-    "outDir": "dist",
-    "skipLibCheck": true,
-    "experimentalDecorators": true,
-    "allowJs": true,
     "noImplicitAny": true,
-    "target": "es2022",
-    "rootDir": "src"
+    "outDir": "dist",
+    "rootDir": "src",
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": true,
+    "target": "es2022"
   },
   "include": ["src/**/*"]
 }

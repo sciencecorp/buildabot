@@ -1,6 +1,6 @@
 import puppeteer, { Browser as PuppeteerBrowser, Page as PuppeteerPage } from "puppeteer";
 import { getJson } from "serpapi";
-import { Agent, PluginInvocation } from "../..";
+import { Agent, PluginInvocation } from "../../index";
 import { Chat } from "../../models/api/openai";
 import { PluginOutput } from "../types";
 

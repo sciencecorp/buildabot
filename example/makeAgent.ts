@@ -1,8 +1,8 @@
-import { Plugin } from "../src";
-import { Browser, Daydream, Shell } from "../src/plugins";
+import { Plugin } from "../src/index";
+import { Browser, Daydream, Shell } from "../src/plugins/index";
 import { OpenApiPlugin } from "../src/plugins/openapi";
 import { ChimaeraAgent } from "./agent";
-import { ChimaeraDreamer } from "./daydreamer";
+import { ChimaeraDreamer } from "./daydreamer/index";
 
 export default async function makeAgent() {
   const retrievalPlugin = process.env.RETRIEVAL_PLUGIN_URL

@@ -1,6 +1,6 @@
-import { Agent, PluginInvocation } from "../../src";
+import { Agent, PluginInvocation } from "../../src/index";
 import { Chat } from "../../src/models/api/openai";
-import { PluginOutput } from "../../src/plugins";
+import { PluginOutput } from "../../src/plugins/index";
 import { _detectPluginUse, _handlePluginOutput, pluginsPrompt } from "../prompt";
 
 export class Generator extends Agent {
