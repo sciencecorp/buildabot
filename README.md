@@ -16,7 +16,7 @@ Run a simple CLI example using `ts-node`:
 
 ```
 npm install
-npx ts-node example/cli.ts
+npx ts-node --experimental-specifier-resolution=node --esm example/cli.ts
 ```
 
 By default this uses GPT-4, OpenAI's latest model which is still in beta, but this is easy to change in [`example/agent.ts`](example/agent.ts).
