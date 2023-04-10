@@ -5,7 +5,7 @@ import { MessageRoles } from "../src/types";
 import { _detectPluginUse, _handlePluginOutput, pluginsPrompt } from "./prompt";
 
 export class ChimaeraAgent extends Agent {
-  model = "gpt-4";
+  model = "gpt-3.5-turbo";
   max_tokens = 750;
   temperature = 0.1;
   verbose = true;

@@ -19,7 +19,7 @@ npm install
 npx ts-node --experimental-specifier-resolution=node --esm example/cli.ts
 ```
 
-By default this uses GPT-4, OpenAI's latest model which is still in beta, but this is easy to change in [`example/agent.ts`](example/agent.ts).
+By default this uses gpt-3.5-turbo; this is easy to change in [`example/agent.ts`](example/agent.ts).
 
 ![basic agent example](intro.gif)
 
