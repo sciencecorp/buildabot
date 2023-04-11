@@ -7,7 +7,9 @@ export abstract class Plugin {
   }
 
   metaprompt = () =>
-    `\n### ${this.manifest.name_for_model}\n${this.manifest.description_for_model}`;
+    `\n### ${this.manifest.name_for_model}
+Name: ${this.manifest.name_for_model}
+${this.manifest.description_for_model}`;
 
   apiSpecPrompt = () =>
     undefined !== this.manifest.api_spec
