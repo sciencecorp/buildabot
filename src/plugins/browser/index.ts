@@ -23,7 +23,7 @@ If the user asks you for web content that you don't know, you should not hestita
   }
 
   async run(action: string, input: string) {
-    if (action !== "browse") {
+    if (action !== "start") {
       throw new Error("Unknown action " + action);
     }
 
